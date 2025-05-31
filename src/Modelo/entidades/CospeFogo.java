@@ -33,7 +33,7 @@ public class CospeFogo extends Entidade implements Serializable{//0xFFac3232
     public void autoDesenho() {
         super.autoDesenho();
 
-        if(this.iContaIntervalos == Consts.TIMER + 10){
+        if(this.iContaIntervalos == Consts.TIMER){
             this.iContaIntervalos = 0;
             Fogo f;
             switch(direcao){

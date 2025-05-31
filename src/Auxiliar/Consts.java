@@ -9,7 +9,7 @@ public class Consts {
     public int MUNDO_ALTURA;
     public static final int PERIOD = 200;
     public static final String PATH = File.separator+"imgs"+File.separator;
-    public static final int TIMER = 10;
+    public static final int TIMER = 15;
     
     public void setLargura(int val){
         MUNDO_LARGURA = val;

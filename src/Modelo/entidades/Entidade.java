@@ -5,6 +5,7 @@ import Auxiliar.Desenho;
 import Controler.Tela;
 import auxiliar.Posicao;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
@@ -82,5 +83,23 @@ public abstract class Entidade implements Serializable {
 
     public boolean moveLeft() {
         return this.pPosicao.moveLeft();
+    }
+    
+    public ImageIcon girarImagem(ImageIcon icon, double angulo) {
+        int w = icon.getIconWidth();
+        int h = icon.getIconHeight();
+
+        BufferedImage buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = buffer.createGraphics();
+        icon.paintIcon(null, g2d, 0, 0);
+        g2d.dispose();
+
+        BufferedImage rotacionada = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        g2d = rotacionada.createGraphics();
+        g2d.rotate(Math.toRadians(angulo), w / 2.0, h / 2.0); // gira no centro da imagem
+        g2d.drawImage(buffer, 0, 0, null);
+        g2d.dispose();
+
+        return new ImageIcon(rotacionada);
     }
 }

@@ -22,14 +22,19 @@ public class Fase {
     public BufferedImage mapa;
     public int indice;
     public ArrayList<Entidade> entidades;
+    public int[] direcoesFogo;
     
-    public Fase(String path){
+    public Fase(String path, int i){
         entidades = new ArrayList<Entidade>();
+        this.indice = i;
         try {
             mapa = ImageIO.read(new File(new java.io.File(".").getCanonicalPath() + Consts.PATH + path));
         } catch (IOException e) {
             System.out.println(e.getMessage());
-        }    
+        }
+        switch(i){
+            case 0 -> direcoesFogo = new int[] {0, 0, 0, 1, 3, 1, 3, 1};
+        }
     }
     
     public Hero getHero(){

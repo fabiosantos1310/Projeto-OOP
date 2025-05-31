@@ -6,6 +6,7 @@ package Modelo.entidades;
 
 import Auxiliar.Consts;
 import Auxiliar.Desenho;
+import Modelo.fases.Fase;
 import auxiliar.Posicao;
 import java.io.IOException;
 import java.io.Serializable;
@@ -17,12 +18,12 @@ import javax.swing.ImageIcon;
  */
 public class Chaser extends Entidade implements Serializable { // 0xFF76428a
 
-    protected String[] images = { "chaser.png", null, null, null, null }; 
+    protected String[] images = { "chaser.png", "chaser.png", null, null, null }; 
 
     
     private boolean iDirectionV;
     private boolean iDirectionH;
-    private boolean canMove = true;
+    private int canMove = 0;
 
     public Chaser(int faseAtual, Posicao p) {
         try{
@@ -33,47 +34,31 @@ public class Chaser extends Entidade implements Serializable { // 0xFF76428a
         iDirectionV = true;
         iDirectionH = true;
         
-        setPosicao(p);
+        this.pPosicao = p;
         
         this.bTransponivel = false;
     }
-
-    public void computeDirection(Posicao heroPos) {
-        if (heroPos.getColuna() < this.getPosicao().getColuna()) {
-            iDirectionH = true;
-        } else if (heroPos.getColuna() > this.getPosicao().getColuna()) {
-            iDirectionH = false;
-        }
-        if (heroPos.getLinha() < this.getPosicao().getLinha()) {
-            iDirectionV = true;
-        } else if (heroPos.getLinha() > this.getPosicao().getLinha()) {
-            iDirectionV = false;
-        }
-    }
     
     @Override
-    public boolean setPosicao(int linha, int coluna){
-        if(this.pPosicao.setPosicao(linha, coluna)){
-            return Desenho.acessoATelaDoJogo().ehPosicaoValida(this.getPosicao(), this);
-        }
-        return false;       
+    public void setPosicao(Posicao p){
+        this.pPosicao.setPosicao(p);
+       
     }
 
     public void autoDesenho() {
-        super.autoDesenho();
-        if(canMove){
-            if (iDirectionH) {
-                this.moveLeft();
-            } else {
-                this.moveRight();
-            }
-            if (iDirectionV) {
-                this.moveUp();
-            } else {
-                this.moveDown();
-            }
+        Fase fase = Desenho.acessoATelaDoJogo().current;
+        if(pPosicao.igual(fase.getHero().getPosicao())){
+            fase.entidades.remove(this);
+            fase.getHero().morrer();
         }
-        canMove = !canMove;
+        super.autoDesenho();
+        if(canMove == 15){
+            this.setPosicao(fase.getHero().getPosicaoAntiga());
+            canMove = 15;
+        }
+        if(canMove != 15)
+            canMove++;
+
     }
 
      private boolean validaPosicao(){

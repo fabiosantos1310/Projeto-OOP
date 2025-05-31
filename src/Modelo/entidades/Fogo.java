@@ -2,6 +2,7 @@ package Modelo.entidades;
 
 import Auxiliar.Consts;
 import Auxiliar.Desenho;
+import Controler.ControleDeJogo;
 import Controler.Tela;
 import auxiliar.Posicao;
 import java.awt.Graphics;
@@ -14,6 +15,7 @@ public class Fogo extends Entidade implements Serializable{
     protected int direcao;
     private int iDirectionV;
     private int iDirectionH;
+    ControleDeJogo cj = new ControleDeJogo();
     
     public Fogo(Posicao p, int direcao) {
         try{
@@ -24,40 +26,42 @@ public class Fogo extends Entidade implements Serializable{
         this.bMortal = false;
         this.pPosicao = p;
         switch(direcao){
-            case 0 -> {
+            case 0 -> { // direita
                 this.iDirectionH = 1;
                 this.iDirectionV = 2;
             }
-            case 1 -> {
+            case 1 -> { // baixo
                 this.iDirectionH = 2;
                 this.iDirectionV = 1;
+                this.iImage = this.girarImagem(this.iImage, 90);
             }
-            case 2 -> {
+            case 2 -> { // esquerda
                 this.iDirectionH = 0;
                 this.iDirectionV = 2;
+                this.iImage = this.girarImagem(this.iImage, 180);
+
             }
-            case 3 -> {
+            case 3 -> { // cima
                 this.iDirectionH = 2;
                 this.iDirectionV = 0;
+                this.iImage = this.girarImagem(this.iImage, 270);
             }              
         }
     }
 
     public void autoDesenho() {
         super.autoDesenho();
-        
+
         if (iDirectionH == 0) {
             if(!this.canMoveLeft())
                 Desenho.acessoATelaDoJogo().current.entidades.remove(this);
             else
                 this.moveLeft();
-        } else if(iDirectionH == 1 && this.pPosicao.getLinha() < 20) {
-            System.out.println(this.pPosicao.getColuna());
+        } else if(iDirectionH == 1) {
             if(!this.canMoveRight())
                 Desenho.acessoATelaDoJogo().current.entidades.remove(this);
             else
                 this.moveRight();
-            System.out.println(this.pPosicao.getColuna());
         } 
         if (iDirectionV == 0) {
             if(!this.canMoveUp())
@@ -70,7 +74,6 @@ public class Fogo extends Entidade implements Serializable{
             else
                 this.moveDown();
         }
-
     }
     
      private boolean validaPosicao(Posicao p){

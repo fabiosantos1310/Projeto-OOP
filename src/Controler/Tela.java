@@ -33,6 +33,7 @@ import java.util.logging.Logger;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 
 public class Tela extends javax.swing.JFrame implements MouseListener, KeyListener {
 
@@ -41,12 +42,12 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     private Graphics g2;
     private int cameraLinha = 0;
     private int cameraColuna = 0;
-    public static Consts c = new Consts();
-    Mundo mundo;
+    public Consts c = new Consts();
+    public Mundo mundo;
     public Fase current;
 
-    public Tela(int faseAtual) {
-        current = Game.fases.get(faseAtual);
+    public Tela() {
+        current = Game.fases.get(0);
         Desenho.setCenario(this);
         initComponents();
         this.addMouseListener(this);
@@ -133,7 +134,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
                 repaint();
                 for(CospeFogo cf : current.getCospeFogo()){
                     cf.iContaIntervalos++;
-                }
+                }               
             }
         };
         Timer timer = new Timer();
@@ -162,6 +163,25 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     public void mousePressed(MouseEvent e) {
         
     }
+    
+    public void passarFase(){
+        mundo.apagarMundo(current);
+        current = Game.fases.get(Game.faseAtual);
+        reiniciar();
+    }
+    
+    public void reiniciar() {
+        mundo.recomecarFase(current, c);
+
+        hero = current.getHero();
+
+        this.atualizaCamera();
+
+        // Atualiza a tela
+        repaint();
+    }
+    
+
 
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents

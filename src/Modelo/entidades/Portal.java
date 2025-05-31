@@ -5,6 +5,8 @@
 package Modelo.entidades;
 
 import Auxiliar.Consts;
+import Auxiliar.Desenho;
+import Auxiliar.Game;
 import auxiliar.Posicao;
 import java.io.IOException;
 import javax.swing.ImageIcon;
@@ -29,7 +31,9 @@ public class Portal extends Entidade{ // 0xFFcbdbfc
     }
     
     public void atravessouPortal(){
-        
+        System.out.println("atravessou portal!");
+        Game.faseAtual++;
+        Desenho.acessoATelaDoJogo().passarFase();
     }
     
 }

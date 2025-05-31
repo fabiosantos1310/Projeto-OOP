@@ -10,6 +10,7 @@ public class Posicao implements Serializable {
     
     private int linhaAnterior;
     private int colunaAnterior;
+    private Tela tela = Desenho.acessoATelaDoJogo();
 
     public Posicao(int linha, int coluna) {
         this.setPosicao(linha, coluna);
@@ -17,12 +18,12 @@ public class Posicao implements Serializable {
 
     public boolean setPosicao(int linha, int coluna) {
 
-        if (linha < 0 || linha >= Tela.c.MUNDO_ALTURA)
+        if (linha < 0 || linha >= tela.c.MUNDO_ALTURA)
             return false;
         linhaAnterior = this.linha;
         this.linha = linha;
 
-        if (coluna < 0 || coluna >= Tela.c.MUNDO_LARGURA)
+        if (coluna < 0 || coluna >= tela.c.MUNDO_LARGURA)
             return false;
         colunaAnterior = this.coluna;
         this.coluna = coluna;
@@ -32,12 +33,12 @@ public class Posicao implements Serializable {
     
     public boolean setPosicao(Posicao p) {
 
-        if (p.linha < 0 || p.linha >= Tela.c.MUNDO_ALTURA)
+        if (p.linha < 0 || p.linha >= tela.c.MUNDO_ALTURA)
             return false;
         linhaAnterior = this.linha;
         this.linha = p.linha;
 
-        if (p.coluna < 0 || p.coluna >= Tela.c.MUNDO_LARGURA)
+        if (p.coluna < 0 || p.coluna >= tela.c.MUNDO_LARGURA)
             return false;
         colunaAnterior = this.coluna;
         this.coluna = p.coluna;
@@ -79,5 +80,11 @@ public class Posicao implements Serializable {
 
     public boolean moveLeft() {
         return this.setPosicao(this.getLinha(), this.getColuna() - 1);
+    }
+    
+    public double distancia(Posicao p){
+        double dx = p.getColuna() - this.getColuna();
+        double dy = p.getColuna() - this.getLinha();
+        return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
     }
 }

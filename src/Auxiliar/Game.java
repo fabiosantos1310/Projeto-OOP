@@ -11,12 +11,12 @@ public class Game {
 
     public static void main(String[] args) {
         for(int i = 0; i < 5; i++){
-            fases.add(new Fase("mapaFase" + (i+1) + ".png"));
+            fases.add(new Fase("mapaFase" + (i+1) + ".png", i));
         }
         
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                Tela tTela = new Tela(faseAtual);
+                Tela tTela = new Tela();
                 tTela.setVisible(true);
                 tTela.createBufferStrategy(2);
                 tTela.go();

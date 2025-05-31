@@ -13,19 +13,17 @@ import javax.swing.ImageIcon;
  *
  * @author PC
  */
-public class Parede extends Entidade { // 0xFFffffff
-    
-    protected String[] images = { "bricks.png", "bricks.png", null, null, null };
+public class Chave extends Entidade{ // d3dc00 
+    protected String image = "chave.png";
 
-    
-    public Parede(int faseAtual, Posicao p){
+    public Chave(Posicao p){
         try{
-            this.iImage = new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + this.images[faseAtual]);
+            this.iImage = new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + this.image);
         } catch(IOException e){
             System.out.println(e.getMessage());
         }
-        this.bTransponivel = false;
+        this.bTransponivel = true;
         setPosicao(p);
     }
-}
     
+}
