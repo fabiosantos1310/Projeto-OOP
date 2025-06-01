@@ -9,9 +9,10 @@ import Modelo.entidades.Fogo;
 import Modelo.entidades.Hero;
 import Modelo.fases.Fase;
 import auxiliar.Posicao;
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class ControleDeJogo {
+public class ControleDeJogo implements Serializable {
     
     public void desenhaTudo(ArrayList<Entidade> entidades) {
         for (Entidade e : entidades) {

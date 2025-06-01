@@ -13,22 +13,27 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import javax.imageio.ImageIO;
+import java.io.ObjectInputStream; 
+import java.io.Serializable;
 
 /**
  *
  * @author PC
  */
-public class Fase {
-    public BufferedImage mapa;
+public class Fase implements Serializable {
+    public transient BufferedImage mapa;
     public int indice;
     public ArrayList<Entidade> entidades;
     public int[] direcoesFogo;
-    
+    private String mapPath;
+    private static final long serialVersionUID = 1L;
+
     public Fase(String path, int i){
         entidades = new ArrayList<Entidade>();
+        this.mapPath = path;
         this.indice = i;
         try {
-            mapa = ImageIO.read(new File(new java.io.File(".").getCanonicalPath() + Consts.PATH + path));
+            mapa = ImageIO.read(new File(new java.io.File(".").getCanonicalPath() + Consts.PATH + this.mapPath));
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
@@ -52,5 +57,16 @@ public class Fase {
                 lista.add(cf);
         }
         return lista;
+    }
+    
+        private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+        if (this.mapPath != null) {
+            try {
+                mapa = ImageIO.read(new File(new java.io.File(".").getCanonicalPath() + Consts.PATH + this.mapPath));
+            } catch (IOException e) {
+                System.out.println("Erro ao recarregar imagem do mapa durante desserializacao: " + e.getMessage());
+            }
+        }
     }
 }

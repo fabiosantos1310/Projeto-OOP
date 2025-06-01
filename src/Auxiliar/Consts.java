@@ -10,7 +10,8 @@ public class Consts {
     public static final int PERIOD = 200;
     public static final String PATH = File.separator+"imgs"+File.separator;
     public static final int TIMER = 15;
-    
+    public static final String SAVE_FILE_PATH = "savegame.dat";
+
     public void setLargura(int val){
         MUNDO_LARGURA = val;
     }

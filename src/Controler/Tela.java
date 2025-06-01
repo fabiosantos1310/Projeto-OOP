@@ -2,16 +2,14 @@ package Controler;
 
 import Modelo.entidades.Entidade;
 import Modelo.entidades.CospeFogo;
-import Modelo.entidades.Hero;
+// import Modelo.entidades.Hero; // Duplicate
 import Modelo.entidades.Chaser;
-
 import Modelo.entidades.BichinhoVaiVemHorizontal;
-import Auxiliar.*;
+import Auxiliar.*; // Imports Consts, Desenho, Game
 import Modelo.entidades.BichinhoVaiVemVertical;
 import Modelo.entidades.ZigueZague;
-import Modelo.fases.Fase;
-import auxiliar.Posicao;
-import java.awt.FlowLayout;
+// import Modelo.fases.Fase; // Duplicate
+import auxiliar.Posicao; // Note: 'auxiliar' package, not 'Auxiliar'
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -19,21 +17,13 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.TimerTask; // Removed unused imports like File, FileInputStream, etc.
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.zip.GZIPInputStream;
-import java.util.zip.GZIPOutputStream;
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
+import Modelo.fases.Fase;
+import Modelo.entidades.Hero;
+
 
 public class Tela extends javax.swing.JFrame implements MouseListener, KeyListener {
 
@@ -47,15 +37,11 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     public Fase current;
 
     public Tela() {
-        current = Game.fases.get(0);
+        current = Game.fases.get(Game.faseAtual); // Use Game.faseAtual for initial phase
         Desenho.setCenario(this);
         initComponents();
         this.addMouseListener(this);
-        /*mouse*/
-
         this.addKeyListener(this);
-        /*teclado*/
- /*Cria a janela do tamanho do tabuleiro + insets (bordas) da janela*/
         this.setSize(Consts.RES * Consts.CELL_SIDE + getInsets().left + getInsets().right,
                 Consts.RES * Consts.CELL_SIDE + getInsets().top + getInsets().bottom);
         mundo = new Mundo();
@@ -63,8 +49,11 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         mundo.carregaMundo(current, c);
         hero = current.getHero();
         
-        this.atualizaCamera();     
-        
+        if (hero != null) {
+            this.atualizaCamera();
+        } else {
+            System.err.println("Erro: Herói não inicializado na fase de construção da Tela.");
+        }
     }
 
     public int getCameraLinha() {
@@ -84,12 +73,13 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     }
 
     public void paint(Graphics gOld) {
+        if (this.getBufferStrategy() == null) { // Ensure buffer strategy is available
+            this.createBufferStrategy(2);
+            return;
+        }
         Graphics g = this.getBufferStrategy().getDrawGraphics();
-        /*Criamos um contexto gráfico*/
         g2 = g.create(getInsets().left, getInsets().top, getWidth() - getInsets().right, getHeight() - getInsets().top);
-        /**
-         * ***********Desenha cenário de fundo*************
-         */
+
         for (int i = 0; i < Consts.RES; i++) {
             for (int j = 0; j < Consts.RES; j++) {
                 int mapaLinha = cameraLinha + i;
@@ -108,7 +98,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
                 }
             }
         }
-        if (!current.entidades.isEmpty()) {
+        if (current != null && !current.entidades.isEmpty()) {
             this.cj.desenhaTudo(current.entidades);
             this.cj.processaTudo(current);
         }
@@ -121,6 +111,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     }
 
     private void atualizaCamera() {
+        if (hero == null) return; // Do not update camera if hero is null
         int linha = hero.getPosicao().getLinha();
         int coluna = hero.getPosicao().getColuna();
 
@@ -129,35 +120,78 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     }
 
     public void go() {
+        java.util.Timer timer = new java.util.Timer(); // Fully qualify Timer to avoid import ambiguity
         TimerTask task = new TimerTask() {
             public void run() {
-                repaint();
-                for(CospeFogo cf : current.getCospeFogo()){
-                    cf.iContaIntervalos++;
-                }               
+                if(current != null && current.getCospeFogo() != null) { // Add null checks
+                    for(CospeFogo cf : current.getCospeFogo()){
+                        if(cf != null) cf.iContaIntervalos++;
+                    }      
+                }
+                repaint(); // repaint is now also at the end of keyPressed for faster feedback
             }
         };
-        Timer timer = new Timer();
         timer.schedule(task, 0, Consts.PERIOD);
     }
-
+    
     public void keyPressed(KeyEvent e) {
-        if (e.getKeyCode() == KeyEvent.VK_C) {
-            this.current.entidades.clear();
-        } else if (e.getKeyCode() == KeyEvent.VK_UP) {
-            hero.moveUp();
-        } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-            hero.moveDown();
-        } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            hero.moveLeft();
-        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            hero.moveRight();
+        if (hero == null && e.getKeyCode() != KeyEvent.VK_L && e.getKeyCode() != KeyEvent.VK_S) { 
+             System.err.println("Herói é nulo, ações de jogo desabilitadas exceto carregar ou salvar.");
+             return;
         }
-        this.atualizaCamera();
-        this.setTitle("-> Cell: " + (hero.getPosicao().getColuna()) + ", "
-                + (hero.getPosicao().getLinha()));
+        
+        if (hero == null && e.getKeyCode() == KeyEvent.VK_S) {
+             System.out.println("Tecla S pressionada (Herói nulo) - Tentando salvar jogo...");
+             Game.salvarJogo(); // Corrected: No parameter
+             return; 
+        }
+        
+        if (hero == null && e.getKeyCode() == KeyEvent.VK_L) {
+            // Allow loading attempt even if hero is null
+        } else if (hero == null) { // If not L or S and hero is null, block other actions
+            System.err.println("Herói é nulo, ação de jogo '" + KeyEvent.getKeyText(e.getKeyCode()) + "' desabilitada.");
+            return;
+        }
 
-        //repaint(); /*invoca o paint imediatamente, sem aguardar o refresh*/
+        if (e.getKeyCode() == KeyEvent.VK_C) {
+            if(this.current != null) this.current.entidades.clear();
+        } else if (e.getKeyCode() == KeyEvent.VK_UP) {
+            if(hero != null) hero.moveUp();
+        } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
+            if(hero != null) hero.moveDown();
+        } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
+            if(hero != null) hero.moveLeft();
+        } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
+            if(hero != null) hero.moveRight();
+        } else if (e.getKeyCode() == KeyEvent.VK_S) {
+            System.out.println("Tecla S pressionada - Salvando jogo...");
+            Game.salvarJogo(); 
+        } else if (e.getKeyCode() == KeyEvent.VK_L) {
+            System.out.println("Tecla L pressionada - Carregando jogo...");
+            if (Game.carregarJogo()) { // Corrected: Call carregarJogo() and check its boolean return
+                this.current = Game.fases.get(Game.faseAtual);
+                if (this.current != null) {
+                    this.hero = this.current.getHero();
+                    if (this.hero == null) {
+                        System.err.println("Alerta: Herói não encontrado na fase carregada. Verifique o arquivo de save ou a lógica de getHero().");
+                    }
+                } else {
+                     System.err.println("Erro: Fase carregada resultou em 'current' nulo para o índice " + Game.faseAtual);
+                }
+                System.out.println("Estado da Tela atualizado com a fase carregada.");
+            } else {
+                System.err.println("Falha ao carregar o jogo. Estado da tela não alterado.");
+            }
+        }
+
+        if (this.hero != null) { 
+            this.atualizaCamera();
+            this.setTitle("-> Cell: " + (hero.getPosicao().getColuna()) + ", "
+                    + (hero.getPosicao().getLinha()));
+        } else {
+             this.setTitle("Skooter - Herói não disponível"); 
+        }
+        repaint();
     }
 
     public void mousePressed(MouseEvent e) {
@@ -165,23 +199,43 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     }
     
     public void passarFase(){
+        if (current == null) return;
         mundo.apagarMundo(current);
-        current = Game.fases.get(Game.faseAtual);
-        reiniciar();
+        // Game.faseAtual should be incremented by the game logic that determines a phase is passed
+        if (Game.faseAtual < Game.fases.size()) {
+            current = Game.fases.get(Game.faseAtual);
+            reiniciar(); // Reiniciar will load the new 'current' phase from map
+        } else {
+            System.out.println("Todas as fases foram completadas ou próxima fase inválida!");
+            // Handle game completion
+        }
     }
     
     public void reiniciar() {
-        mundo.recomecarFase(current, c);
-
+        if (current == null) {
+            System.err.println("Não é possível reiniciar, fase atual ('current') é nula.");
+            // Attempt to reload current phase from Game.fases based on Game.faseAtual
+            if (Game.faseAtual >= 0 && Game.faseAtual < Game.fases.size()) {
+                this.current = Game.fases.get(Game.faseAtual);
+                 if (this.current == null) { // if it's still null after trying to get it from list
+                     System.err.println("Falha ao obter a fase " + Game.faseAtual + " da lista global de fases.");
+                     return;
+                 }
+            } else {
+                 System.err.println("Índice de fase atual " + Game.faseAtual + " é inválido.");
+                 return;
+            }
+        }
+        mundo.recomecarFase(current, c); // Recarrega 'current' a partir do mapa
         hero = current.getHero();
-
-        this.atualizaCamera();
-
-        // Atualiza a tela
+        if (hero != null) {
+            this.atualizaCamera();
+        } else {
+            System.err.println("Erro: Herói não encontrado após reiniciar a fase.");
+        }
         repaint();
     }
     
-
 
 
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
