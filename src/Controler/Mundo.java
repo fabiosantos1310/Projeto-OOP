@@ -42,19 +42,26 @@ public class Mundo {
                             fase.entidades.add(new Chaser(fase.indice,new Posicao(yy, xx)));
                         case 0xFFac3232 -> // cospefogo 
                         {
-                            fase.entidades.add(new CospeFogo(fase.indice,new Posicao(yy, xx), fase.direcoesFogo[i]));
+                            CospeFogo cf = new CospeFogo(fase.indice,new Posicao(yy, xx), fase.direcoesFogo[i]);
+                            fase.entidades.add(cf);
+                            fase.cospeFogos.add(cf);
                             i++;
                         }
                         case 0xFFfbf236 -> // PLAYER
-                            fase.entidades.add(new Hero(new Posicao(yy, xx)));
+                            fase.entidades.add(new Hero(new Posicao(yy, xx), false, fase.indice));
                         case 0xFFcbdbfc -> // portal
                             fase.entidades.add(new Portal(new Posicao(yy, xx))); 
                         case 0xFF5fcde4 -> // ziguezague
                             fase.entidades.add(new ZigueZague(fase.indice, new Posicao(yy, xx)));
-                        case 0xFFd3dc00 ->
-                            fase.entidades.add(new Chave(new Posicao(yy, xx)));
-                        case 0xFFff45ff ->
+                        case 0xFFd3dc00 ->{ // chave
+                            Chave chave = new Chave(new Posicao(yy, xx));
+                            fase.entidades.add(chave);
+                            fase.chaves.add(chave);
+                        }
+                        case 0xFFff45ff -> // cadeado
                             fase.entidades.add(new Cadeado(new Posicao(yy, xx)));
+                        case 0xFFffc500 -> // botao
+                            fase.entidades.add(new Botao(new Posicao(yy, xx))); 
                     }
                 }
             }

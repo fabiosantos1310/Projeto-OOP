@@ -2,8 +2,10 @@ package Modelo.entidades;
 
 import Auxiliar.Consts;
 import Auxiliar.Desenho;
+import Auxiliar.Game;
 import Controler.ControleDeJogo;
 import Controler.Tela;
+import Modelo.fases.Fase;
 import auxiliar.Posicao;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -19,17 +21,26 @@ import javax.swing.JPanel;
 
 public class Hero extends Entidade implements Serializable{ //0xFFfbf236
     
-    protected String heroPNG = "robbo.png";
+    protected String[] images = { "robbo.png", "robbo.png", "donkeykong.png", null, null };
+    protected String clonePng = "diddykong.png";
     protected boolean vivo = true;
     private Queue<Posicao> posicoes;
     Posicao ultimaPosicao;
     public boolean temChave = false;
     public int chaves = 0;
+    public boolean isClone;
+    private Fase fase;
     
-    public Hero(Posicao p) {
+    public Hero(Posicao p, boolean isClone, int faseAtual) {
         posicoes = new LinkedList<>();
+        this.isClone = isClone;
+        fase = Game.fases.get(faseAtual);
+
         try{
-            this.iImage = new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + this.heroPNG);
+            if(this.isClone)
+                this.iImage = new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + this.clonePng);
+            else
+                this.iImage = new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + this.images[faseAtual]);
         } catch(IOException e){
             System.out.println(e.getMessage());
         }
@@ -37,7 +48,7 @@ public class Hero extends Entidade implements Serializable{ //0xFFfbf236
         Posicao aux = new Posicao(p.getLinha(), p.getColuna());
         posicoes.add(aux);
         ultimaPosicao = p;
-        this.bTransponivel = true;
+        this.bTransponivel = false;
     }
 
     public void voltaAUltimaPosicao(){
@@ -86,41 +97,60 @@ public class Hero extends Entidade implements Serializable{ //0xFFfbf236
     }
     
     public boolean moveUp() {
-        Posicao aux = new Posicao(pPosicao.getLinha(), pPosicao.getColuna());
-        posicoes.add(aux);
+        if(!this.isClone){
+            Posicao aux = new Posicao(pPosicao.getLinha(), pPosicao.getColuna());
+            posicoes.add(aux);
+        }
 
         if(super.moveUp()){
+            if(fase.hasClone && !this.isClone)
+                fase.getClone().moveUp();
             return validaPosicao();       
-
         }
         return false;
+
     }
 
     public boolean moveDown() {
-        Posicao aux = new Posicao(pPosicao.getLinha(), pPosicao.getColuna());
-        posicoes.add(aux);
+        if(!this.isClone){
+            Posicao aux = new Posicao(pPosicao.getLinha(), pPosicao.getColuna());
+            posicoes.add(aux);
+        }
 
-        if(super.moveDown())
+        if(super.moveDown()){
+            if(fase.hasClone && !this.isClone)
+                fase.getClone().moveDown();
             return validaPosicao();       
+        }
 
         return false;
     }
 
     public boolean moveRight() {
-        Posicao aux = new Posicao(pPosicao.getLinha(), pPosicao.getColuna());
-        posicoes.add(aux);        
-        
-        if(super.moveRight())
+        if(!this.isClone){
+            Posicao aux = new Posicao(pPosicao.getLinha(), pPosicao.getColuna());
+            posicoes.add(aux);
+        }
+
+        if(super.moveRight()){
+            if(fase.hasClone && !this.isClone)
+                fase.getClone().moveLeft();
             return validaPosicao();       
+        }
         return false;
     }
 
     public boolean moveLeft() {
-        Posicao aux = new Posicao(pPosicao.getLinha(), pPosicao.getColuna());
-        posicoes.add(aux);
+        if(!this.isClone){
+            Posicao aux = new Posicao(pPosicao.getLinha(), pPosicao.getColuna());
+            posicoes.add(aux);
+        }
 
-        if(super.moveLeft())
-            return validaPosicao();
+        if(super.moveLeft()){
+            if(fase.hasClone && !this.isClone)
+                fase.getClone().moveRight();
+            return validaPosicao();       
+        }
                       
         return false;
     }    

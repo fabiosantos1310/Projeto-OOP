@@ -5,9 +5,12 @@
 package Modelo.fases;
 
 import Auxiliar.Consts;
+import Modelo.entidades.Chave;
 import Modelo.entidades.CospeFogo;
 import Modelo.entidades.Entidade;
+import Modelo.entidades.Fogo;
 import Modelo.entidades.Hero;
+import auxiliar.Posicao;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +31,12 @@ public class Fase implements Serializable {
     private String mapPath;
     private static final long serialVersionUID = 1L;
 
+    public boolean hasClone =false;
+    public ArrayList<Fogo> fogos = new ArrayList<>();
+    public ArrayList<Chave> chaves = new ArrayList<>();
+    public ArrayList<CospeFogo> cospeFogos = new ArrayList<CospeFogo>();
+
+    
     public Fase(String path, int i){
         entidades = new ArrayList<Entidade>();
         this.mapPath = path;
@@ -38,25 +47,35 @@ public class Fase implements Serializable {
             System.out.println(e.getMessage());
         }
         switch(i){
-            case 0 -> direcoesFogo = new int[] {0, 0, 0, 1, 3, 1, 3, 1};
+            case 0 -> direcoesFogo = new int[] {0, 0, 0, 1, 3, 0};
+            case 2 -> direcoesFogo = new int[] {0, 0, 2, 2, 2, 0, 0, 0, 2};
         }
     }
     
     public Hero getHero(){
         for(Entidade e : entidades){
-            if(e instanceof Hero hero)
+            if(e instanceof Hero hero && !hero.isClone)
                 return hero;
         }
         return null;
     }
     
-    public ArrayList<CospeFogo> getCospeFogo(){
-        ArrayList<CospeFogo> lista = new ArrayList<CospeFogo>();
+    public Hero getClone(){
         for(Entidade e : entidades){
-            if(e instanceof CospeFogo cf)
-                lista.add(cf);
+            if(e instanceof Hero hero && hero.isClone)
+                return hero;
         }
-        return lista;
+        return null;
+    }
+    
+    public void addClone(){
+        Hero clone = new Hero(new Posicao(1, 6), true, this.indice);
+        this.entidades.add(clone);
+        this.hasClone = true;
+    }
+    
+    public ArrayList<CospeFogo> getCospeFogo(){
+        return cospeFogos;
     }
     
         private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {

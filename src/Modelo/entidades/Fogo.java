@@ -11,19 +11,21 @@ import java.io.Serializable;
 import javax.swing.ImageIcon;
 
 public class Fogo extends Entidade implements Serializable{
-    protected String image =  "fire.png";
+    protected String[] images = { "fire.png",  null,  "barrel.png", null, null };
     protected int direcao;
     private int iDirectionV;
     private int iDirectionH;
-    ControleDeJogo cj = new ControleDeJogo();
+    Tela tela = Desenho.acessoATelaDoJogo();
     
-    public Fogo(Posicao p, int direcao) {
+    
+    public Fogo(int faseAtual, Posicao p, int direcao) {
         try{
-            this.iImage = new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + this.image);
+            this.iImage = new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + this.images[faseAtual]);
         } catch(IOException e){
             System.out.println(e.getMessage());
         }
-        this.bMortal = false;
+        this.bMortal = true;
+        this.bTransponivel = true;
         this.pPosicao = p;
         switch(direcao){
             case 0 -> { // direita
@@ -47,33 +49,67 @@ public class Fogo extends Entidade implements Serializable{
                 this.iImage = this.girarImagem(this.iImage, 270);
             }              
         }
+        tela.current.fogos.add(this);
     }
 
     public void autoDesenho() {
         super.autoDesenho();
 
         if (iDirectionH == 0) {
-            if(!this.canMoveLeft())
-                Desenho.acessoATelaDoJogo().current.entidades.remove(this);
-            else
+            if (podeMover(-1, 0))
                 this.moveLeft();
-        } else if(iDirectionH == 1) {
-            if(!this.canMoveRight())
-                Desenho.acessoATelaDoJogo().current.entidades.remove(this);
-            else
+            else{
+                    tela.current.entidades.remove(this);
+                    tela.current.fogos.remove(this);
+            }
+
+        } else if (iDirectionH == 1) {
+            if (podeMover(1, 0))
                 this.moveRight();
-        } 
-        if (iDirectionV == 0) {
-            if(!this.canMoveUp())
-                Desenho.acessoATelaDoJogo().current.entidades.remove(this);
-            else
-                this.moveUp();
-        } else  if(iDirectionV == 1){
-            if(!this.canMoveDown())
-                Desenho.acessoATelaDoJogo().current.entidades.remove(this);
-            else
-                this.moveDown();
+            else{
+                    tela.current.entidades.remove(this);
+                    tela.current.fogos.remove(this);
+            }
         }
+
+        if (iDirectionV == 0) {
+            if (podeMover(0, -1))
+                this.moveUp();
+            else{
+                    tela.current.entidades.remove(this);
+                    tela.current.fogos.remove(this);
+            }
+            
+
+        } else if (iDirectionV == 1) {
+            if (podeMover(0, 1))
+                this.moveDown();
+            else{
+                    tela.current.entidades.remove(this);
+                    tela.current.fogos.remove(this);
+            }
+        }
+    }
+
+    // Exemplo de método auxiliar para prever o movimento
+    private boolean podeMover(int dx, int dy) {
+        // Salva posição atual
+        int xOriginal = this.pPosicao.getColuna();
+        int yOriginal = this.pPosicao.getLinha();
+
+        // Move virtualmente
+        this.pPosicao.setPosicao(dy + yOriginal, dx + xOriginal);
+        boolean ok = verificaPos();
+        // Volta para posição original
+        this.pPosicao.setPosicao(yOriginal, xOriginal);
+
+
+        return ok;
+    }
+
+    
+    public boolean verificaPos(){
+        return tela.cj.ehPosicaoValida(tela.current, pPosicao, this);
     }
     
      private boolean validaPosicao(Posicao p){

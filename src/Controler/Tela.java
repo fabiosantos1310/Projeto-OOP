@@ -26,7 +26,7 @@ import Modelo.entidades.Hero;
 public class Tela extends javax.swing.JFrame implements MouseListener, KeyListener {
 
     private Hero hero;
-    private ControleDeJogo cj = new ControleDeJogo();
+    public ControleDeJogo cj = new ControleDeJogo();
     private Graphics g2;
     private int cameraLinha = 0;
     private int cameraColuna = 0;

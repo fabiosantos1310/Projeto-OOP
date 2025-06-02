@@ -5,6 +5,8 @@
 package Modelo.entidades;
 
 import Auxiliar.Consts;
+import Auxiliar.Desenho;
+import Controler.Tela;
 import auxiliar.Posicao;
 import java.io.IOException;
 import javax.swing.ImageIcon;
@@ -13,19 +15,20 @@ import javax.swing.ImageIcon;
  *
  * @author PC
  */
-public class Parede extends Entidade { // 0xFFffffff
+public class Botao extends Entidade{ // ffc500
+    Tela tela = Desenho.acessoATelaDoJogo();
     
-    protected String[] images = { "bricks.png", "bricks.png", "bricks.png", null, null };
+    protected String image = "botao.png";
 
     
-    public Parede(int faseAtual, Posicao p){
+    public Botao(Posicao p) {
         try{
-            this.iImage = new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + this.images[faseAtual]);
+            this.iImage = new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + this.image);
         } catch(IOException e){
             System.out.println(e.getMessage());
         }
-        this.bTransponivel = false;
+        this.bTransponivel = true;
+        this.bMortal = true;
         setPosicao(p);
     }
 }
-    
