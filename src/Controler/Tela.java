@@ -2,14 +2,12 @@ package Controler;
 
 import Modelo.entidades.Entidade;
 import Modelo.entidades.CospeFogo;
-// import Modelo.entidades.Hero; // Duplicate
 import Modelo.entidades.Chaser;
 import Modelo.entidades.BichinhoVaiVemHorizontal;
-import Auxiliar.*; // Imports Consts, Desenho, Game
+import Auxiliar.*;
 import Modelo.entidades.BichinhoVaiVemVertical;
 import Modelo.entidades.ZigueZague;
-// import Modelo.fases.Fase; // Duplicate
-import auxiliar.Posicao; // Note: 'auxiliar' package, not 'Auxiliar'
+import auxiliar.Posicao;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.Toolkit;
@@ -18,7 +16,7 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
-import java.util.TimerTask; // Removed unused imports like File, FileInputStream, etc.
+import java.util.TimerTask;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import Modelo.fases.Fase;
@@ -37,7 +35,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     public Fase current;
 
     public Tela() {
-        current = Game.fases.get(Game.faseAtual); // Use Game.faseAtual for initial phase
+        current = Game.fases.get(Game.faseAtual);
         Desenho.setCenario(this);
         initComponents();
         this.addMouseListener(this);
@@ -73,7 +71,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     }
 
     public void paint(Graphics gOld) {
-        if (this.getBufferStrategy() == null) { // Ensure buffer strategy is available
+        if (this.getBufferStrategy() == null) {
             this.createBufferStrategy(2);
             return;
         }
@@ -111,7 +109,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     }
 
     private void atualizaCamera() {
-        if (hero == null) return; // Do not update camera if hero is null
+        if (hero == null) return;
         int linha = hero.getPosicao().getLinha();
         int coluna = hero.getPosicao().getColuna();
 
@@ -120,15 +118,15 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     }
 
     public void go() {
-        java.util.Timer timer = new java.util.Timer(); // Fully qualify Timer to avoid import ambiguity
+        java.util.Timer timer = new java.util.Timer();
         TimerTask task = new TimerTask() {
             public void run() {
-                if(current != null && current.getCospeFogo() != null) { // Add null checks
+                if(current != null && current.getCospeFogo() != null) {
                     for(CospeFogo cf : current.getCospeFogo()){
                         if(cf != null) cf.iContaIntervalos++;
                     }      
                 }
-                repaint(); // repaint is now also at the end of keyPressed for faster feedback
+                repaint();
             }
         };
         timer.schedule(task, 0, Consts.PERIOD);
@@ -142,13 +140,12 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         
         if (hero == null && e.getKeyCode() == KeyEvent.VK_S) {
              System.out.println("Tecla S pressionada (Herói nulo) - Tentando salvar jogo...");
-             Game.salvarJogo(); // Corrected: No parameter
+             Game.salvarJogo();
              return; 
         }
         
         if (hero == null && e.getKeyCode() == KeyEvent.VK_L) {
-            // Allow loading attempt even if hero is null
-        } else if (hero == null) { // If not L or S and hero is null, block other actions
+        } else if (hero == null) {
             System.err.println("Herói é nulo, ação de jogo '" + KeyEvent.getKeyText(e.getKeyCode()) + "' desabilitada.");
             return;
         }
@@ -168,7 +165,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
             Game.salvarJogo(); 
         } else if (e.getKeyCode() == KeyEvent.VK_L) {
             System.out.println("Tecla L pressionada - Carregando jogo...");
-            if (Game.carregarJogo()) { // Corrected: Call carregarJogo() and check its boolean return
+            if (Game.carregarJogo()) {
                 this.current = Game.fases.get(Game.faseAtual);
                 if (this.current != null) {
                     this.hero = this.current.getHero();
@@ -201,20 +198,17 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     public void passarFase(){
         if (current == null) return;
         mundo.apagarMundo(current);
-        // Game.faseAtual should be incremented by the game logic that determines a phase is passed
         if (Game.faseAtual < Game.fases.size()) {
             current = Game.fases.get(Game.faseAtual);
-            reiniciar(); // Reiniciar will load the new 'current' phase from map
+            reiniciar();
         } else {
             System.out.println("Todas as fases foram completadas ou próxima fase inválida!");
-            // Handle game completion
         }
     }
     
     public void reiniciar() {
         if (current == null) {
             System.err.println("Não é possível reiniciar, fase atual ('current') é nula.");
-            // Attempt to reload current phase from Game.fases based on Game.faseAtual
             if (Game.faseAtual >= 0 && Game.faseAtual < Game.fases.size()) {
                 this.current = Game.fases.get(Game.faseAtual);
                  if (this.current == null) { // if it's still null after trying to get it from list
@@ -226,7 +220,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
                  return;
             }
         }
-        mundo.recomecarFase(current, c); // Recarrega 'current' a partir do mapa
+        mundo.recomecarFase(current, c);
         hero = current.getHero();
         if (hero != null) {
             this.atualizaCamera();

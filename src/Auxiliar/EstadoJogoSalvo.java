@@ -4,7 +4,7 @@ import Modelo.fases.Fase;
 import java.io.Serializable;
 
 public class EstadoJogoSalvo implements Serializable {
-    private static final long serialVersionUID = 1L; // Alterar se a estrutura da classe mudar significativamente
+    private static final long serialVersionUID = 1L;
     public int faseAtualIndex;
     public Fase faseObject;
     public int mundoLargura;

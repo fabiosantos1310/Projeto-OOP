@@ -16,9 +16,8 @@ public class Posicao implements Serializable {
     private static final long serialVersionUID = 1L;
 
     public Posicao(int linha, int coluna) {
-        // It's good practice to initialize transient fields that have default access logic
         relinkTela(); 
-        this.setPosicao(linha, coluna); // setPosicao will use the (now hopefully linked) tela
+        this.setPosicao(linha, coluna);
     }
 
     public void relinkTela() {
@@ -26,8 +25,8 @@ public class Posicao implements Serializable {
     }
 
     private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
-        ois.defaultReadObject(); // Reads non-transient fields (linha, coluna, etc.)
-        relinkTela(); // Re-initialize transient 'tela' field after deserialization
+        ois.defaultReadObject();
+        relinkTela();
     }
     
 
@@ -35,16 +34,12 @@ public class Posicao implements Serializable {
         if (this.tela == null) {
             relinkTela();
         }
-        // It's possible 'tela' or 'tela.c' is still null if Desenho.jCenario isn't set yet
-        // This can happen if Posicao objects are created before Tela is fully initialized and set in Desenho
         if (this.tela == null || this.tela.c == null) {
-             // System.err.println("Posicao.setPosicao: Tela or Tela.c is null. Bounds check skipped.");
-             // Fallback or error:
              this.linhaAnterior = this.linha;
              this.linha = linha;
              this.colunaAnterior = this.coluna;
              this.coluna = coluna;
-             return true; // Or handle error more strictly
+             return true;
         }
 
         if (linha < 0 || linha >= this.tela.c.MUNDO_ALTURA || coluna < 0 || coluna >= this.tela.c.MUNDO_LARGURA) {
@@ -108,7 +103,7 @@ public class Posicao implements Serializable {
     }
     
     public double distancia(Posicao p){
-        if (p == null) return Double.NaN; // Or throw an exception
+        if (p == null) return Double.NaN;
         double dx = p.getColuna() - this.getColuna();
         double dy = p.getLinha() - this.getLinha(); 
         return Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));

@@ -34,7 +34,6 @@ public class ControleDeJogo implements Serializable {
         verificaChave(fase);
     }
 
-    /*Retorna true se a posicao p é válida para Hero com relacao a todos os personagens no array*/
     public boolean ehPosicaoValida(Fase fase, Posicao p, Entidade current) {
         for (Entidade e : fase.entidades) {
             if(e instanceof Cadeado cadeado){

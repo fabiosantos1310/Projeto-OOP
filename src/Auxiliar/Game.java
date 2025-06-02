@@ -73,9 +73,9 @@ public class Game {
         try (ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(Consts.SAVE_FILE_PATH))) {
             SavedGameState gameState = new SavedGameState(
                     faseAtual,
-                    tTela.current, // Access public field 'current'
-                    tTela.c.MUNDO_LARGURA, // Access public field 'c' and its MUNDO_LARGURA
-                    tTela.c.MUNDO_ALTURA); // Access public field 'c' and its MUNDO_ALTURA
+                    tTela.current,
+                    tTela.c.MUNDO_LARGURA,
+                    tTela.c.MUNDO_ALTURA);
             oos.writeObject(gameState);
             System.out.println("Jogo salvo em " + Consts.SAVE_FILE_PATH);
         } catch (IOException e) {
@@ -84,7 +84,7 @@ public class Game {
         }
     }
 
-    public static boolean carregarJogo() { // Changed return type to boolean to indicate success/failure
+    public static boolean carregarJogo() {
         if (tTela == null) {
             System.err.println("Erro: Tela não inicializada para carregar o jogo.");
             return false;
@@ -114,13 +114,13 @@ public class Game {
             }
             fases.set(faseAtual, loadedFase);
             
-            tTela.current = loadedFase; // Set Tela's public 'current' field
+            tTela.current = loadedFase;
 
-            tTela.c.setLargura(loadedState.getMundoLargura()); // Set dimensions on Tela's public 'c' field
+            tTela.c.setLargura(loadedState.getMundoLargura()); 
             tTela.c.setAltura(loadedState.getMundoAltura());
             
             System.out.println("Jogo carregado de " + Consts.SAVE_FILE_PATH + ". Fase: " + faseAtual);
-            return true; // Indicate success
+            return true;
         } catch (IOException | ClassNotFoundException e) {
             System.err.println("Falha ao carregar o jogo: " + e.getMessage());
             e.printStackTrace();
