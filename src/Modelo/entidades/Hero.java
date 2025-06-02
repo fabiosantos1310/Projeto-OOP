@@ -21,15 +21,17 @@ import javax.swing.JPanel;
 
 public class Hero extends Entidade implements Serializable{ //0xFFfbf236
     
-    protected String[] images = { "robbo.png", "robbo.png", "donkeykong.png", null, null };
+    protected String[] images = { "robbo.png", "robbo.png", "donkeykong.png", "robbo.png", "diddykong.png" };
     protected String clonePng = "diddykong.png";
-    protected boolean vivo = true;
     private Queue<Posicao> posicoes;
     Posicao ultimaPosicao;
     public boolean temChave = false;
     public int chaves = 0;
+    public int direcao = 0;
+    public int moedas = 0;
     public boolean isClone;
     private Fase fase;
+    private Tela tela = Desenho.acessoATelaDoJogo();
     
     public Hero(Posicao p, boolean isClone, int faseAtual) {
         posicoes = new LinkedList<>();
@@ -44,11 +46,13 @@ public class Hero extends Entidade implements Serializable{ //0xFFfbf236
         } catch(IOException e){
             System.out.println(e.getMessage());
         }
+        
         setPosicao(p);
         Posicao aux = new Posicao(p.getLinha(), p.getColuna());
         posicoes.add(aux);
         ultimaPosicao = p;
         this.bTransponivel = false;
+        this.bMortal = true;
     }
 
     public void voltaAUltimaPosicao(){
@@ -61,10 +65,18 @@ public class Hero extends Entidade implements Serializable{ //0xFFfbf236
             temChave = false;
     }
     
+    public void removeMoedas(int val){
+        this.moedas -= val;
+    }
+    
+    public void addMoeda(){
+        this.moedas++;
+    }
+    
     
     public boolean setPosicao(int linha, int coluna){
         if(this.pPosicao.setPosicao(linha, coluna)){
-            if (!Desenho.acessoATelaDoJogo().ehPosicaoValida(this.getPosicao(), this)) {
+            if (!tela.ehPosicaoValida(this.getPosicao(), this)) {
                 this.voltaAUltimaPosicao();
             }
             return true;
@@ -74,7 +86,7 @@ public class Hero extends Entidade implements Serializable{ //0xFFfbf236
 
     /*TO-DO: este metodo pode ser interessante a todos os personagens que se movem*/
     private boolean validaPosicao(){
-        if (!Desenho.acessoATelaDoJogo().ehPosicaoValida(this.getPosicao(), this)) {
+        if (!tela.ehPosicaoValida(this.getPosicao(), this)) {
             this.voltaAUltimaPosicao();
             return false;
         }
@@ -82,12 +94,10 @@ public class Hero extends Entidade implements Serializable{ //0xFFfbf236
     }
     
     public void morrer(){
-        if(vivo){
-            JOptionPane.showMessageDialog(Desenho.acessoATelaDoJogo(), "Você morreu! A fase será reiniciada.", "Game Over", JOptionPane.INFORMATION_MESSAGE);
-
-            Desenho.acessoATelaDoJogo().reiniciar();
-            vivo = false;
-        }
+       
+        JOptionPane.showMessageDialog(tela, "Você morreu! A fase será reiniciada.", "Game Over", JOptionPane.INFORMATION_MESSAGE);
+        tela.cj.limparListas();
+        tela.reiniciar(); 
     }
     
     public Posicao getPosicaoAntiga(){
@@ -97,6 +107,7 @@ public class Hero extends Entidade implements Serializable{ //0xFFfbf236
     }
     
     public boolean moveUp() {
+        direcao = 3;
         if(!this.isClone){
             Posicao aux = new Posicao(pPosicao.getLinha(), pPosicao.getColuna());
             posicoes.add(aux);
@@ -105,13 +116,17 @@ public class Hero extends Entidade implements Serializable{ //0xFFfbf236
         if(super.moveUp()){
             if(fase.hasClone && !this.isClone)
                 fase.getClone().moveUp();
-            return validaPosicao();       
+            if(validaPosicao()){
+                tela.atualizaCamera();
+                return true;
+            }       
         }
         return false;
 
     }
 
     public boolean moveDown() {
+        direcao = 1;
         if(!this.isClone){
             Posicao aux = new Posicao(pPosicao.getLinha(), pPosicao.getColuna());
             posicoes.add(aux);
@@ -120,13 +135,17 @@ public class Hero extends Entidade implements Serializable{ //0xFFfbf236
         if(super.moveDown()){
             if(fase.hasClone && !this.isClone)
                 fase.getClone().moveDown();
-            return validaPosicao();       
+            if(validaPosicao()){
+                tela.atualizaCamera();
+                return true;
+            }        
         }
 
         return false;
     }
 
     public boolean moveRight() {
+        direcao = 0;
         if(!this.isClone){
             Posicao aux = new Posicao(pPosicao.getLinha(), pPosicao.getColuna());
             posicoes.add(aux);
@@ -135,12 +154,16 @@ public class Hero extends Entidade implements Serializable{ //0xFFfbf236
         if(super.moveRight()){
             if(fase.hasClone && !this.isClone)
                 fase.getClone().moveLeft();
-            return validaPosicao();       
+            if(validaPosicao()){
+                tela.atualizaCamera();
+                return true;
+            }
         }
         return false;
     }
 
     public boolean moveLeft() {
+        direcao = 2;
         if(!this.isClone){
             Posicao aux = new Posicao(pPosicao.getLinha(), pPosicao.getColuna());
             posicoes.add(aux);
@@ -149,10 +172,12 @@ public class Hero extends Entidade implements Serializable{ //0xFFfbf236
         if(super.moveLeft()){
             if(fase.hasClone && !this.isClone)
                 fase.getClone().moveRight();
-            return validaPosicao();       
+            if(validaPosicao()){
+                tela.atualizaCamera();
+                return true;
+            }     
         }
                       
         return false;
     }    
-    
 }

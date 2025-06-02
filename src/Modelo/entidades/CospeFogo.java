@@ -15,7 +15,7 @@ public class CospeFogo extends Entidade implements Serializable{//0xFFac3232
     Tela tela = Desenho.acessoATelaDoJogo();
     int faseAtual;
     
-    protected String[] images = { "caveira.png",  null,  "canhao.png", null, null };
+    protected String[] images = { "caveira.png",  null,  "canhao.png", "caveira.png", "canhao.png" };
 
     
     public CospeFogo(int faseAtual, Posicao p, int direcao) {
@@ -35,23 +35,24 @@ public class CospeFogo extends Entidade implements Serializable{//0xFFac3232
             case 2 -> this.iImage = this.girarImagem(this.iImage, 270);
         }
         setPosicao(p);
+        iContaIntervalos = 0;
     }
 
     @Override
     public void autoDesenho() {
         super.autoDesenho();
-
-        if(this.iContaIntervalos == Consts.TIMER){
+        this.iContaIntervalos++;
+        if(this.iContaIntervalos >= Consts.TIMER + 10){
             this.iContaIntervalos = 0;
             Fogo f;
             switch(direcao){
-                case 1 -> f = new Fogo(faseAtual, new Posicao(pPosicao.getLinha() + 1, pPosicao.getColuna()), direcao);
-                case 2 -> f = new Fogo(faseAtual, new Posicao(pPosicao.getLinha(), pPosicao.getColuna()- 1), direcao);
-                case 3 -> f = new Fogo(faseAtual, new Posicao(pPosicao.getLinha() - 1, pPosicao.getColuna()), direcao);
-                default -> f = new Fogo(faseAtual, new Posicao(pPosicao.getLinha(), pPosicao.getColuna()+ 1), direcao);
+                case 1 -> f = new Fogo(faseAtual, new Posicao(pPosicao), direcao);
+                case 2 -> f = new Fogo(faseAtual, new Posicao(pPosicao), direcao);
+                case 3 -> f = new Fogo(faseAtual, new Posicao(pPosicao), direcao);
+                default -> f = new Fogo(faseAtual, new Posicao(pPosicao), direcao);
             }
             
-            tela.current.entidades.add(f);
+            tela.current.fogos.add(f);
         }
     }    
 }

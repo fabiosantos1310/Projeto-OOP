@@ -21,6 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import Modelo.fases.Fase;
 import Modelo.entidades.Hero;
+import javax.swing.JLabel;
 
 
 public class Tela extends javax.swing.JFrame implements MouseListener, KeyListener {
@@ -51,7 +52,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
             this.atualizaCamera();
         } else {
             System.err.println("Erro: Herói não inicializado na fase de construção da Tela.");
-        }
+        }   
     }
 
     public int getCameraLinha() {
@@ -97,7 +98,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
             }
         }
         if (current != null && !current.entidades.isEmpty()) {
-            this.cj.desenhaTudo(current.entidades);
+            this.cj.desenhaTudo(current);
             this.cj.processaTudo(current);
         }
 
@@ -108,7 +109,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         }
     }
 
-    private void atualizaCamera() {
+    public void atualizaCamera() {
         if (hero == null) return;
         int linha = hero.getPosicao().getLinha();
         int coluna = hero.getPosicao().getColuna();
@@ -121,11 +122,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         java.util.Timer timer = new java.util.Timer();
         TimerTask task = new TimerTask() {
             public void run() {
-                if(current != null && current.getCospeFogo() != null) {
-                    for(CospeFogo cf : current.getCospeFogo()){
-                        if(cf != null) cf.iContaIntervalos++;
-                    }      
-                }
+               
                 repaint();
             }
         };
@@ -153,14 +150,17 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
         if (e.getKeyCode() == KeyEvent.VK_C) {
             if(this.current != null) this.current.entidades.clear();
         } else if (e.getKeyCode() == KeyEvent.VK_UP) {
-            if(hero != null) hero.moveUp();
+            if(hero != null) {hero.moveUp();}
         } else if (e.getKeyCode() == KeyEvent.VK_DOWN) {
-            if(hero != null) hero.moveDown();
+            if(hero != null) {hero.moveDown();}
         } else if (e.getKeyCode() == KeyEvent.VK_LEFT) {
-            if(hero != null) hero.moveLeft();
+            if(hero != null) {hero.moveLeft();}
         } else if (e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            if(hero != null) hero.moveRight();
-        } else if (e.getKeyCode() == KeyEvent.VK_S) {
+            if(hero != null) {
+                hero.moveRight();
+            }
+        }  
+        if (e.getKeyCode() == KeyEvent.VK_S) {
             System.out.println("Tecla S pressionada - Salvando jogo...");
             Game.salvarJogo(); 
         } else if (e.getKeyCode() == KeyEvent.VK_L) {
@@ -198,11 +198,12 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
     public void passarFase(){
         if (current == null) return;
         mundo.apagarMundo(current);
+        cj.limparListas();
         if (Game.faseAtual < Game.fases.size()) {
             current = Game.fases.get(Game.faseAtual);
             reiniciar();
         } else {
-            System.out.println("Todas as fases foram completadas ou próxima fase inválida!");
+            System.out.println("Todas as fases foram completadas!!");
         }
     }
     
@@ -220,6 +221,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
                  return;
             }
         }
+        hero = null;
         mundo.recomecarFase(current, c);
         hero = current.getHero();
         if (hero != null) {

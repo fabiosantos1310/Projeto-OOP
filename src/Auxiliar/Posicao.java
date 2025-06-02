@@ -19,6 +19,11 @@ public class Posicao implements Serializable {
         relinkTela(); 
         this.setPosicao(linha, coluna);
     }
+    
+    public Posicao(Posicao p) {
+        relinkTela(); 
+        this.setPosicao(p);
+    }
 
     public void relinkTela() {
         this.tela = Desenho.acessoATelaDoJogo();

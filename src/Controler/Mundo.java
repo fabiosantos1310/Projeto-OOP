@@ -26,11 +26,12 @@ public class Mundo {
         int[] pixels = new int[(WIDTH * HEIGHT)];
         fase.mapa.getRGB(0,0,WIDTH, HEIGHT, pixels, 0,WIDTH);
         var rand = new Random();
+        Hero hero = null;
         int i = 0;
         for(int xx = 0; xx < WIDTH; xx++){
                 for(int yy = 0; yy < HEIGHT; yy++){
                     if(pixels[xx + (yy*WIDTH)] == 0xFFffffff){ // parede
-                        fase.entidades.add(new Parede(fase.indice, new Posicao(yy, xx)));
+                        fase.paredes.add(new Parede(new Posicao(yy, xx)));
                     }
                     
                     switch(pixels[xx + (yy*WIDTH)]){
@@ -48,28 +49,39 @@ public class Mundo {
                             i++;
                         }
                         case 0xFFfbf236 -> // PLAYER
-                            fase.entidades.add(new Hero(new Posicao(yy, xx), false, fase.indice));
+                            hero = new Hero(new Posicao(yy, xx), false, fase.indice);
                         case 0xFFcbdbfc -> // portal
                             fase.entidades.add(new Portal(new Posicao(yy, xx))); 
                         case 0xFF5fcde4 -> // ziguezague
                             fase.entidades.add(new ZigueZague(fase.indice, new Posicao(yy, xx)));
                         case 0xFFd3dc00 ->{ // chave
                             Chave chave = new Chave(new Posicao(yy, xx));
-                            fase.entidades.add(chave);
                             fase.chaves.add(chave);
                         }
                         case 0xFFff45ff -> // cadeado
                             fase.entidades.add(new Cadeado(new Posicao(yy, xx)));
                         case 0xFFffc500 -> // botao
                             fase.entidades.add(new Botao(new Posicao(yy, xx))); 
+                        case 0xFFf1fbfc -> // botao 
+                            fase.entidades.add(new Gelo(new Posicao(yy, xx)));
+                        case 0xFF004c61 ->{ // moeda
+                            Moeda moeda = new Moeda(new Posicao(yy, xx));
+                            fase.moedas.add(moeda);
+                        }
                     }
                 }
             }
+        fase.entidades.add(new Hero(hero.getPosicao(), false, fase.indice));
     }
     
     public void apagarMundo(Fase fase){
         System.out.println("apagou a fase");
         fase.entidades.clear();
+        fase.chaves.clear();
+        fase.cospeFogos.clear();
+        fase.fogos.clear();
+        fase.paredes.clear();
+        fase.moedas.clear();
     }
     
     public void recomecarFase(Fase fase, Consts c){

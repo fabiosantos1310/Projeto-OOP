@@ -26,6 +26,8 @@ public class BichinhoVaiVemHorizontal extends Entidade implements Serializable {
         }
         bRight = true;
         iContador = 0;
+        this.bTransponivel = false;
+
         this.setPosicao(p);
     }
 

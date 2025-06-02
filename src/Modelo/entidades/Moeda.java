@@ -13,19 +13,17 @@ import javax.swing.ImageIcon;
  *
  * @author PC
  */
-public class Parede extends Entidade { // 0xFFffffff
-    
-    protected String image = "bricks.png";
+public class Moeda extends Entidade{ //004c61
+    protected String image = "moeda.png";
 
-    
-    public Parede(Posicao p){
+    public Moeda(Posicao p){
         try{
             this.iImage = new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + this.image);
         } catch(IOException e){
             System.out.println(e.getMessage());
         }
-        this.bTransponivel = false;
+        this.bTransponivel = true;
+        this.bMortal = true;
         setPosicao(p);
     }
 }
-    

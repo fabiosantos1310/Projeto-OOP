@@ -6,6 +6,7 @@ package Modelo.entidades;
 
 import Auxiliar.Consts;
 import Auxiliar.Desenho;
+import Controler.Tela;
 import Modelo.fases.Fase;
 import auxiliar.Posicao;
 import java.io.IOException;
@@ -18,12 +19,13 @@ import javax.swing.ImageIcon;
  */
 public class Chaser extends Entidade implements Serializable { // 0xFF76428a
 
-    protected String[] images = { "chaser.png", "chaser.png", null, null, null }; 
+    protected String[] images = { null, "chaser.png", null, null, "chaser.png" }; 
 
     
     private boolean iDirectionV;
     private boolean iDirectionH;
     private int canMove = 0;
+    private Tela tela = Desenho.acessoATelaDoJogo();
 
     public Chaser(int faseAtual, Posicao p) {
         try{
@@ -46,7 +48,7 @@ public class Chaser extends Entidade implements Serializable { // 0xFF76428a
     }
 
     public void autoDesenho() {
-        Fase fase = Desenho.acessoATelaDoJogo().current;
+        Fase fase = tela.current;
         if(pPosicao.igual(fase.getHero().getPosicao())){
             fase.entidades.remove(this);
             fase.getHero().morrer();
@@ -54,46 +56,10 @@ public class Chaser extends Entidade implements Serializable { // 0xFF76428a
         super.autoDesenho();
         if(canMove == 15){
             this.setPosicao(fase.getHero().getPosicaoAntiga());
-            canMove = 15;
+            canMove = 12;
         }
         if(canMove != 15)
             canMove++;
 
-    }
-
-     private boolean validaPosicao(){
-        if (!Desenho.acessoATelaDoJogo().ehPosicaoValida(this.getPosicao(), this)) {
-            this.voltaAUltimaPosicao();
-            return false;
-        }
-        return true;       
-    }
-     
-    public void voltaAUltimaPosicao(){
-        this.pPosicao.volta();
-    }
-    
-    public boolean moveUp() {
-        if(super.moveUp())
-            return validaPosicao();
-        return false;
-    }
-
-    public boolean moveDown() {
-        if(super.moveDown())
-            return validaPosicao();
-        return false;
-    }
-
-    public boolean moveRight() {
-        if(super.moveRight())
-            return validaPosicao();
-        return false;
-    }
-
-    public boolean moveLeft() {
-        if(super.moveLeft())
-            return validaPosicao();
-        return false;
-    }    
+    }   
 }

@@ -11,7 +11,7 @@ import java.io.Serializable;
 import javax.swing.ImageIcon;
 
 public class Fogo extends Entidade implements Serializable{
-    protected String[] images = { "fire.png",  null,  "barrel.png", null, null };
+    protected String[] images = { "fire.png",  null,  "barrel.png", "fire.png", "barrel.png" };
     protected int direcao;
     private int iDirectionV;
     private int iDirectionH;
@@ -49,26 +49,21 @@ public class Fogo extends Entidade implements Serializable{
                 this.iImage = this.girarImagem(this.iImage, 270);
             }              
         }
-        tela.current.fogos.add(this);
     }
 
     public void autoDesenho() {
-        super.autoDesenho();
-
         if (iDirectionH == 0) {
             if (podeMover(-1, 0))
                 this.moveLeft();
             else{
-                    tela.current.entidades.remove(this);
-                    tela.current.fogos.remove(this);
+                tela.current.fogos.remove(this);
             }
 
         } else if (iDirectionH == 1) {
             if (podeMover(1, 0))
                 this.moveRight();
             else{
-                    tela.current.entidades.remove(this);
-                    tela.current.fogos.remove(this);
+                tela.current.fogos.remove(this);
             }
         }
 
@@ -76,8 +71,7 @@ public class Fogo extends Entidade implements Serializable{
             if (podeMover(0, -1))
                 this.moveUp();
             else{
-                    tela.current.entidades.remove(this);
-                    tela.current.fogos.remove(this);
+                tela.current.fogos.remove(this);
             }
             
 
@@ -85,30 +79,27 @@ public class Fogo extends Entidade implements Serializable{
             if (podeMover(0, 1))
                 this.moveDown();
             else{
-                    tela.current.entidades.remove(this);
-                    tela.current.fogos.remove(this);
+                tela.current.fogos.remove(this);
             }
         }
+        super.autoDesenho();
     }
 
-    // Exemplo de método auxiliar para prever o movimento
     private boolean podeMover(int dx, int dy) {
-        // Salva posição atual
         int xOriginal = this.pPosicao.getColuna();
         int yOriginal = this.pPosicao.getLinha();
 
-        // Move virtualmente
         this.pPosicao.setPosicao(dy + yOriginal, dx + xOriginal);
         boolean ok = verificaPos();
-        // Volta para posição original
         this.pPosicao.setPosicao(yOriginal, xOriginal);
-
+        
 
         return ok;
     }
 
     
     public boolean verificaPos(){
+        tela.cj.verificaFogo(tela.current);
         return tela.cj.ehPosicaoValida(tela.current, pPosicao, this);
     }
     

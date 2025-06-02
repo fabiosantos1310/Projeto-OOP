@@ -10,6 +10,8 @@ import Modelo.entidades.CospeFogo;
 import Modelo.entidades.Entidade;
 import Modelo.entidades.Fogo;
 import Modelo.entidades.Hero;
+import Modelo.entidades.Moeda;
+import Modelo.entidades.Parede;
 import auxiliar.Posicao;
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -31,15 +33,18 @@ public class Fase implements Serializable {
     private String mapPath;
     private static final long serialVersionUID = 1L;
 
-    public boolean hasClone =false;
+    public boolean hasClone;
     public ArrayList<Fogo> fogos = new ArrayList<>();
     public ArrayList<Chave> chaves = new ArrayList<>();
-    public ArrayList<CospeFogo> cospeFogos = new ArrayList<CospeFogo>();
+    public ArrayList<Parede> paredes = new ArrayList<>();
+    public ArrayList<CospeFogo> cospeFogos = new ArrayList<>();
+    public ArrayList<Moeda> moedas = new ArrayList<>();
 
     
     public Fase(String path, int i){
         entidades = new ArrayList<Entidade>();
         this.mapPath = path;
+        hasClone =false;
         this.indice = i;
         try {
             mapa = ImageIO.read(new File(new java.io.File(".").getCanonicalPath() + Consts.PATH + this.mapPath));
@@ -49,6 +54,8 @@ public class Fase implements Serializable {
         switch(i){
             case 0 -> direcoesFogo = new int[] {0, 0, 0, 1, 3, 0};
             case 2 -> direcoesFogo = new int[] {0, 0, 2, 2, 2, 0, 0, 0, 2};
+            case 3 ->  direcoesFogo = new int[] {3,3,3};
+            case 4 ->  direcoesFogo = new int[] {0,0,0,0, 1,1,3};
         }
     }
     

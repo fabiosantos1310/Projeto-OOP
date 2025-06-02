@@ -19,6 +19,8 @@ public class BichinhoVaiVemVertical extends Entidade{ // 0xFFd77bba
         }
         bUp = true;
         this.setPosicao(p);
+        this.bTransponivel = false;
+
     }
 
     public void autoDesenho(){
