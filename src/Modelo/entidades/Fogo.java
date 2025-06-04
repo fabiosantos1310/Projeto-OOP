@@ -12,11 +12,11 @@ import javax.swing.ImageIcon;
 public class Fogo extends Entidade implements Serializable{
     private static final long serialVersionUID = 1L;
     protected String[] images = { "fire.png",  null,  "barrel.png", "fire.png", "barrel.png" };
-    protected int direcaoFogo; // Renomeado para evitar conflito com Entidade.direcao se existir
+    protected int direcaoFogo;
     private int iDirectionV;
     private int iDirectionH;
     transient Tela tela;
-    private int entidadeFaseAtualIndex; // Para armazenar o índice da fase para a imagem
+    private int entidadeFaseAtualIndex; 
     
     public Fogo(int faseAtual, Posicao p, int direcao) {
         super();
@@ -39,7 +39,7 @@ public class Fogo extends Entidade implements Serializable{
         
         this.bMortal = true;
         this.bTransponivel = true;
-        this.pPosicao = p; // Atribuição direta, já que não chamou super(p)
+        this.pPosicao = p; 
         
         aplicarRotacaoDaImagem();
         configurarDirecoesDeMovimento();
@@ -47,30 +47,29 @@ public class Fogo extends Entidade implements Serializable{
 
     private void aplicarRotacaoDaImagem() {
         if (this.iImage == null) return;
-        switch(this.direcaoFogo){ // Usar direcaoFogo aqui
-            // case 0: não gira ou gira 0 graus (direita)
-            case 1: this.iImage = this.girarImagem(this.iImage, 90); break;  // baixo
-            case 2: this.iImage = this.girarImagem(this.iImage, 180); break; // esquerda
-            case 3: this.iImage = this.girarImagem(this.iImage, 270); break; // cima
+        switch(this.direcaoFogo){
+            case 1: this.iImage = this.girarImagem(this.iImage, 90); break;  
+            case 2: this.iImage = this.girarImagem(this.iImage, 180); break; 
+            case 3: this.iImage = this.girarImagem(this.iImage, 270); break; 
         }
     }
     
     private void configurarDirecoesDeMovimento() {
-        switch(this.direcaoFogo){ // Usar direcaoFogo aqui
-            case 0: // direita
+        switch(this.direcaoFogo){ 
+            case 0: 
                 this.iDirectionH = 1;
-                this.iDirectionV = 2; // 2 significa sem movimento vertical
+                this.iDirectionV = 2; 
                 break;
-            case 1: // baixo
-                this.iDirectionH = 2; // 2 significa sem movimento horizontal
+            case 1: 
+                this.iDirectionH = 2; 
                 this.iDirectionV = 1;
                 break;
-            case 2: // esquerda
+            case 2: 
                 this.iDirectionH = 0;
-                this.iDirectionV = 2; // 2 significa sem movimento vertical
+                this.iDirectionV = 2; 
                 break;
-            case 3: // cima
-                this.iDirectionH = 2; // 2 significa sem movimento horizontal
+            case 3: 
+                this.iDirectionH = 2; 
                 this.iDirectionV = 0;
                 break;            
         }
@@ -92,7 +91,7 @@ public class Fogo extends Entidade implements Serializable{
             try {
                 this.iImage = new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + imageName);
                 aplicarRotacaoDaImagem();
-                configurarDirecoesDeMovimento(); // Reconfigurar direções após carregar
+                configurarDirecoesDeMovimento(); 
             } catch (IOException e) {
                 System.err.println("Erro ao recarregar imagem para Fogo: " + e.getMessage());
             }
@@ -101,6 +100,11 @@ public class Fogo extends Entidade implements Serializable{
 
     public void autoDesenho() {
         boolean moveu = false;
+        if (this.tela == null || this.tela.current == null || this.tela.current.fogos == null) {
+            super.autoDesenho(); // Ainda tenta desenhar se a imagem existir
+            return;
+        }
+
         if (iDirectionH == 0) { 
             if (podeMover(-1, 0)) {
                 this.moveLeft();
@@ -113,7 +117,7 @@ public class Fogo extends Entidade implements Serializable{
             }
         }
 
-        if (!moveu) { // Só tenta mover verticalmente se não moveu horizontalmente (ou se iDirectionH == 2)
+        if (!moveu) { 
             if (iDirectionV == 0) {
                 if (podeMover(0, -1)) {
                     this.moveUp();
@@ -127,61 +131,55 @@ public class Fogo extends Entidade implements Serializable{
             }
         }
         
-        if (!moveu && (this.tela != null && this.tela.current != null && this.tela.current.fogos != null)) {
+        if (!moveu) {
              this.tela.current.fogos.remove(this);
         }
         super.autoDesenho();
     }
 
     private boolean podeMover(int dx, int dy) {
-        if (this.pPosicao == null || this.tela == null) return false;
+        if (this.pPosicao == null || this.tela == null || this.tela.current == null) return false;
         
         Posicao proximaPosicao = new Posicao(this.pPosicao.getLinha() + dy, this.pPosicao.getColuna() + dx);
         
-        // Verifica se a próxima posição é válida no mundo ANTES de verificar colisões específicas do fogo
         if (proximaPosicao.getLinha() < 0 || proximaPosicao.getLinha() >= this.tela.c.MUNDO_ALTURA ||
             proximaPosicao.getColuna() < 0 || proximaPosicao.getColuna() >= this.tela.c.MUNDO_LARGURA) {
             return false; 
         }
-        // Não precisa mais da lógica de salvar e restaurar posição aqui se 'verificaPos' não a altera.
-        // A lógica de verificaPos precisaria ser robusta.
-        // Temporariamente, assumimos que ehPosicaoValida do ControleDeJogo é suficiente
-        // para paredes, mas não para outras entidades (que o fogo deveria atravessar ou destruir).
-        // A lógica de colisão do Fogo com outras entidades é feita em ControleDeJogo.verificaFogo.
-        // Aqui, apenas verificamos se a célula em si é transitável (ex: não é uma parede intransponível para fogo).
-        // Se o fogo deve passar por cima de tudo exceto os limites do mapa,
-        // a validação de posição aqui pode ser mais simples ou até removida,
-        // e a remoção do fogo ocorreria por ControleDeJogo ou ao sair dos limites.
-
-        // Para simplificar, vamos assumir que o fogo só é barrado pelos limites do mapa por enquanto.
-        // A lógica de colisão específica do fogo com o herói ou outras entidades é tratada em ControleDeJogo.verificaFogo().
-        // E a remoção do fogo quando atinge algo é feita lá ou no autoDesenho se não puder mover.
-        return this.tela.cj.ehPosicaoValida(this.tela.current, proximaPosicao, this); // Usa ehPosicaoValida para consistência.
-
+        
+        // Salva a posição original para restaurar após a verificação
+        int linhaOriginal = this.pPosicao.getLinha();
+        int colunaOriginal = this.pPosicao.getColuna();
+        
+        // Move temporariamente para a próxima posição para verificar com ehPosicaoValida
+        this.pPosicao.setPosicao(proximaPosicao.getLinha(), proximaPosicao.getColuna());
+        boolean ok = this.tela.cj.ehPosicaoValida(this.tela.current, this.pPosicao, this);
+        
+        // Restaura a posição original
+        this.pPosicao.setPosicao(linhaOriginal, colunaOriginal);
+        
+        return ok;
     }
     
-    public boolean verificaPos(){ // Este método é chamado por podeMover implicitamente através de ehPosicaoValida
-        if (this.tela == null || this.tela.cj == null || this.tela.current == null) return false;
-        this.tela.cj.verificaFogo(this.tela.current); 
+    public boolean verificaPos(){
+        if (this.tela == null || this.tela.cj == null || this.tela.current == null || this.pPosicao == null) return false;
+        // A chamada original para this.tela.cj.verificaFogo(...) foi removida.
         return this.tela.cj.ehPosicaoValida(this.tela.current, pPosicao, this);
     }
     
-    private boolean validaPosicao(Posicao p){ // Este parece um helper mais genérico
+    private boolean validaPosicao(Posicao p){
          if (Desenho.acessoATelaDoJogo() == null) return false;
         return Desenho.acessoATelaDoJogo().ehPosicaoValida(p, this);    
     }
     
     @Override
     public boolean setPosicao(int linha, int coluna){
-        if (this.pPosicao == null) { // Se pPosicao for nulo, crie um novo
+        if (this.pPosicao == null) { 
             this.pPosicao = new Posicao(linha, coluna);
             return true;
         }
-        // A lógica original de Fogo.setPosicao validava antes de mover.
-        // Entidade.setPosicao não valida, apenas Posicao.setPosicao (que valida limites do mapa).
-        // Vamos manter uma validação aqui se for importante para Fogo especificamente.
         Posicao p = new Posicao(linha, coluna);
-        if(this.validaPosicao(p)){ // Usa o helper local validaPosicao
+        if(this.validaPosicao(p)){ 
             return this.pPosicao.setPosicao(p);
         }
         return false;        

@@ -28,6 +28,7 @@ public class BichinhoVaiVemHorizontal extends Entidade implements Serializable {
         bRight = true;
         iContador = 0;
         this.bTransponivel = false;
+        this.bMortal = true; // Garante que o bicho é letal
         this.setPosicao(p);
     }
 
