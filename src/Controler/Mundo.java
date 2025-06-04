@@ -5,8 +5,6 @@
 package Controler;
 
 import Auxiliar.Consts;
-import Auxiliar.Desenho;
-import Auxiliar.Game;
 import Modelo.entidades.*;
 import Modelo.fases.Fase;
 import auxiliar.Posicao;

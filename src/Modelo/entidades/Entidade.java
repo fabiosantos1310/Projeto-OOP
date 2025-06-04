@@ -1,29 +1,19 @@
 package Modelo.entidades;
 
-import Auxiliar.Consts;
 import Auxiliar.Desenho;
-// Controler.Tela não é usado diretamente aqui, pode ser removido se não for necessário para outros imports
-// import Controler.Tela; 
 import auxiliar.Posicao;
-import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
-// import java.awt.Toolkit; // Não utilizado diretamente
 import java.awt.image.BufferedImage;
-import java.io.IOException; // Importe apenas se alguma subclasse lançar explicitamente
 import java.io.Serializable;
 import javax.swing.ImageIcon;
-// javax.swing.JFrame e javax.swing.JPanel não são usados, podem ser removidos
-// import javax.swing.JFrame;
-// import javax.swing.JPanel;
 
 public abstract class Entidade implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    protected ImageIcon iImage; // Inicializado pelas subclasses ou construtor com Posicao
-    protected Posicao pPosicao;
-    protected boolean bTransponivel; /*Pode passar por cima?*/
-    protected boolean bMortal;       /*Se encostar, morre?*/
+    protected transient ImageIcon iImage; // Inicializado pelas subclasses ou construtor com Posicao
+    protected  Posicao pPosicao;
+    protected  boolean bTransponivel; /*Pode passar por cima?*/
+    protected  boolean bMortal;       /*Se encostar, morre?*/
 
     /**
      * Construtor base para Entidade.

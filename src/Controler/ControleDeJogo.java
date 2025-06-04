@@ -2,16 +2,13 @@ package Controler;
 
 import Modelo.entidades.Botao;
 import Modelo.entidades.Cadeado;
-import Modelo.entidades.Chaser;
 import Modelo.entidades.Chave;
-import Modelo.entidades.CospeFogo;
 import Modelo.entidades.Portal;
 import Modelo.entidades.Entidade;
 import Modelo.entidades.Fogo;
 import Modelo.entidades.Gelo;
 import Modelo.entidades.Hero;
 import Modelo.entidades.Moeda;
-import Modelo.entidades.Parede;
 import Modelo.fases.Fase;
 import auxiliar.Posicao;
 import java.io.Serializable;
@@ -19,9 +16,9 @@ import java.util.ArrayList;
 
 public class ControleDeJogo implements Serializable {
     
-    ArrayList<Entidade> eIntransponiveis;
-    ArrayList<Entidade> eMortais;
-    ArrayList<Gelo> eGelos;
+     ArrayList<Entidade> eIntransponiveis;
+     ArrayList<Entidade> eMortais;
+     ArrayList<Gelo> eGelos;
     
     
     public ControleDeJogo(){

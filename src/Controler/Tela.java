@@ -27,8 +27,8 @@ import javax.swing.JLabel;
 public class Tela extends javax.swing.JFrame implements MouseListener, KeyListener {
 
     private Hero hero;
-    public ControleDeJogo cj = new ControleDeJogo();
-    private Graphics g2;
+    public  ControleDeJogo cj = new ControleDeJogo();
+    private transient Graphics g2;
     private int cameraLinha = 0;
     private int cameraColuna = 0;
     public Consts c = new Consts();

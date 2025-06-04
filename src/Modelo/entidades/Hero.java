@@ -3,24 +3,19 @@ package Modelo.entidades;
 import Auxiliar.Consts;
 import Auxiliar.Desenho;
 import Auxiliar.Game;
-import Controler.ControleDeJogo;
 import Controler.Tela;
-import Modelo.fases.Fase;
 import auxiliar.Posicao;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.Queue;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
 
+public class Hero extends Entidade implements Serializable {
+    private static final long serialVersionUID = 1L;
 
-public class Hero extends Entidade implements Serializable{ //0xFFfbf236
-    
     protected String[] images = { "robbo.png", "robbo.png", "donkeykong.png", "robbo.png", "diddykong.png" };
     protected String clonePng = "diddykong.png";
     private Queue<Posicao> posicoes;
@@ -30,24 +25,37 @@ public class Hero extends Entidade implements Serializable{ //0xFFfbf236
     public int direcao = 0;
     public int moedas = 0;
     public boolean isClone;
-    private Fase fase;
-    private Tela tela = Desenho.acessoATelaDoJogo();
-    
+    // private transient Fase fase; // REMOVIDO este campo
+    private transient Tela tela;
+    public int heroFaseAtualIndex; 
+
     public Hero(Posicao p, boolean isClone, int faseAtual) {
+        super(p); 
         posicoes = new LinkedList<>();
         this.isClone = isClone;
-        fase = Game.fases.get(faseAtual);
+        this.heroFaseAtualIndex = faseAtual; 
+        
+        this.tela = Desenho.acessoATelaDoJogo();
 
-        try{
-            if(this.isClone)
-                this.iImage = new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + this.clonePng);
-            else
-                this.iImage = new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + this.images[faseAtual]);
-        } catch(IOException e){
-            System.out.println(e.getMessage());
+        String imageName = null;
+        if(this.isClone) {
+            imageName = this.clonePng;
+        } else {
+            if (this.images != null && this.heroFaseAtualIndex >= 0 && this.heroFaseAtualIndex < this.images.length) {
+                 imageName = this.images[this.heroFaseAtualIndex];
+            }
         }
         
-        setPosicao(p);
+        if (imageName != null) {
+            try{
+                this.iImage = new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + imageName);
+            } catch(IOException e){
+                System.out.println("Hero constructor image load error: " + e.getMessage());
+            }
+        } else {
+            System.err.println("Hero constructor: Imagem não pode ser determinada.");
+        }
+        
         Posicao aux = new Posicao(p.getLinha(), p.getColuna());
         posicoes.add(aux);
         ultimaPosicao = p;
@@ -55,8 +63,39 @@ public class Hero extends Entidade implements Serializable{ //0xFFfbf236
         this.bMortal = true;
     }
 
+    private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
+        in.defaultReadObject();
+
+        if (Desenho.acessoATelaDoJogo() != null) {
+            this.tela = Desenho.acessoATelaDoJogo();
+        } else {
+            System.err.println("Alerta: Hero - Desenho.acessoATelaDoJogo() nulo durante readObject.");
+        }
+        
+        String imageNameForLoad = null;
+        if (this.isClone) {
+            imageNameForLoad = this.clonePng;
+        } else {
+            if (this.images != null && this.heroFaseAtualIndex >= 0 && this.heroFaseAtualIndex < this.images.length) {
+                imageNameForLoad = this.images[this.heroFaseAtualIndex];
+            }
+        }
+
+        if (imageNameForLoad != null) {
+            try {
+                this.iImage = new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + imageNameForLoad);
+            } catch (java.io.IOException e) {
+                System.err.println("Erro ao recarregar imagem para Hero: " + imageNameForLoad + " - " + e.getMessage());
+            }
+        } else {
+             System.err.println("Alerta: Hero - Nome da imagem não pôde ser determinado para recarregar iImage.");
+        }
+    }
+    
     public void voltaAUltimaPosicao(){
-        this.pPosicao.volta();
+        if (this.pPosicao != null) {
+            this.pPosicao.volta();
+        }
     }
     
     public void removeChave(){
@@ -73,89 +112,88 @@ public class Hero extends Entidade implements Serializable{ //0xFFfbf236
         this.moedas++;
     }
     
-    
     public boolean setPosicao(int linha, int coluna){
         if(this.pPosicao.setPosicao(linha, coluna)){
-            if (!tela.ehPosicaoValida(this.getPosicao(), this)) {
+            if (this.tela != null && !tela.ehPosicaoValida(this.getPosicao(), this)) {
                 this.voltaAUltimaPosicao();
             }
             return true;
         }
-        return false;       
+        return false;    
     }
-
-    /*TO-DO: este metodo pode ser interessante a todos os personagens que se movem*/
+    
     private boolean validaPosicao(){
-        if (!tela.ehPosicaoValida(this.getPosicao(), this)) {
+        if (this.tela != null && !tela.ehPosicaoValida(this.getPosicao(), this)) {
             this.voltaAUltimaPosicao();
             return false;
         }
-        return true;       
+        return true;    
     }
     
     public void morrer(){
-       
+        if (this.tela == null) {
+             System.err.println("Hero.morrer(): Referência para tela é nula!");
+             return;
+        }
         JOptionPane.showMessageDialog(tela, "Você morreu! A fase será reiniciada.", "Game Over", JOptionPane.INFORMATION_MESSAGE);
         tela.cj.limparListas();
-        tela.reiniciar(); 
+        tela.reiniciar();    
     }
     
     public Posicao getPosicaoAntiga(){
-        if(!this.posicoes.isEmpty())
+        if(this.posicoes != null && !this.posicoes.isEmpty())
             return this.posicoes.poll();
         return ultimaPosicao;
     }
     
     public boolean moveUp() {
         direcao = 3;
-        if(!this.isClone){
+        if(!this.isClone && this.pPosicao != null && this.posicoes != null){
             Posicao aux = new Posicao(pPosicao.getLinha(), pPosicao.getColuna());
             posicoes.add(aux);
         }
 
         if(super.moveUp()){
-            if(fase.hasClone && !this.isClone)
-                fase.getClone().moveUp();
+            if(this.tela != null && this.tela.current != null && this.tela.current.hasClone && !this.isClone && this.tela.current.getClone() != null)
+                this.tela.current.getClone().moveUp();
             if(validaPosicao()){
-                tela.atualizaCamera();
+                if(this.tela != null) tela.atualizaCamera();
                 return true;
-            }       
+            }        
         }
         return false;
-
     }
 
     public boolean moveDown() {
         direcao = 1;
-        if(!this.isClone){
+        if(!this.isClone && this.pPosicao != null && this.posicoes != null){
             Posicao aux = new Posicao(pPosicao.getLinha(), pPosicao.getColuna());
             posicoes.add(aux);
         }
 
         if(super.moveDown()){
-            if(fase.hasClone && !this.isClone)
-                fase.getClone().moveDown();
+            if(this.tela != null && this.tela.current != null && this.tela.current.hasClone && !this.isClone && this.tela.current.getClone() != null)
+                this.tela.current.getClone().moveDown();
             if(validaPosicao()){
-                tela.atualizaCamera();
+                if(this.tela != null) tela.atualizaCamera();
                 return true;
             }        
         }
-
         return false;
     }
 
     public boolean moveRight() {
         direcao = 0;
-        if(!this.isClone){
+        if(!this.isClone && this.pPosicao != null && this.posicoes != null){
             Posicao aux = new Posicao(pPosicao.getLinha(), pPosicao.getColuna());
             posicoes.add(aux);
         }
 
         if(super.moveRight()){
-            if(fase.hasClone && !this.isClone)
-                fase.getClone().moveLeft();
+            if(this.tela != null && this.tela.current != null && this.tela.current.hasClone && !this.isClone && this.tela.current.getClone() != null)
+                this.tela.current.getClone().moveLeft(); 
             if(validaPosicao()){
-                tela.atualizaCamera();
+                if(this.tela != null) tela.atualizaCamera();
                 return true;
             }
         }
@@ -164,20 +202,19 @@ public class Hero extends Entidade implements Serializable{ //0xFFfbf236
 
     public boolean moveLeft() {
         direcao = 2;
-        if(!this.isClone){
+        if(!this.isClone && this.pPosicao != null && this.posicoes != null){
             Posicao aux = new Posicao(pPosicao.getLinha(), pPosicao.getColuna());
             posicoes.add(aux);
         }
 
         if(super.moveLeft()){
-            if(fase.hasClone && !this.isClone)
-                fase.getClone().moveRight();
+            if(this.tela != null && this.tela.current != null && this.tela.current.hasClone && !this.isClone && this.tela.current.getClone() != null)
+                this.tela.current.getClone().moveRight(); 
             if(validaPosicao()){
-                tela.atualizaCamera();
+                if(this.tela != null) tela.atualizaCamera();
                 return true;
-            }     
+            }    
         }
-                      
         return false;
     }    
 }

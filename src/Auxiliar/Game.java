@@ -14,7 +14,7 @@ public class Game {
 
     public static int faseAtual = 0;
     public static ArrayList<Fase> fases = new ArrayList<Fase>();
-    public static Tela tTela; 
+    public static transient Tela tTela; 
 
     static class SavedGameState implements Serializable {
         private static final long serialVersionUID = 1L; 

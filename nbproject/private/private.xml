@@ -4,25 +4,31 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/PC/IdeaProjects/PrototipoProjetoPOO2025/src/Controler/Tela.java</file>
-            <file>file:/C:/Users/PC/IdeaProjects/PrototipoProjetoPOO2025/src/Controler/Mundo.java</file>
-            <file>file:/C:/Users/PC/IdeaProjects/PrototipoProjetoPOO2025/imgs/mapaFase1.png</file>
-            <file>file:/C:/Users/PC/IdeaProjects/PrototipoProjetoPOO2025/src/Modelo/fases/Fase.java</file>
-            <file>file:/C:/Users/PC/IdeaProjects/PrototipoProjetoPOO2025/src/Controler/ControleDeJogo.java</file>
-            <file>file:/C:/Users/PC/IdeaProjects/PrototipoProjetoPOO2025/src/Auxiliar/Desenho.java</file>
-            <file>file:/C:/Users/PC/IdeaProjects/PrototipoProjetoPOO2025/src/Auxiliar/Game.java</file>
-            <file>file:/C:/Users/PC/IdeaProjects/PrototipoProjetoPOO2025/src/Modelo/entidades/Entidade.java</file>
-            <file>file:/C:/Users/PC/IdeaProjects/PrototipoProjetoPOO2025/src/Modelo/entidades/BichinhoVaiVemHorizontal.java</file>
-            <file>file:/C:/Users/PC/IdeaProjects/PrototipoProjetoPOO2025/src/Modelo/entidades/BichinhoVaiVemVertical.java</file>
-            <file>file:/C:/Users/PC/IdeaProjects/PrototipoProjetoPOO2025/src/Modelo/entidades/Chaser.java</file>
-            <file>file:/C:/Users/PC/IdeaProjects/PrototipoProjetoPOO2025/src/Modelo/entidades/CospeFogo.java</file>
-            <file>file:/C:/Users/PC/IdeaProjects/PrototipoProjetoPOO2025/src/Modelo/entidades/Fogo.java</file>
-            <file>file:/C:/Users/PC/IdeaProjects/PrototipoProjetoPOO2025/src/Modelo/entidades/Hero.java</file>
-            <file>file:/C:/Users/PC/IdeaProjects/PrototipoProjetoPOO2025/src/Modelo/entidades/Parede.java</file>
-            <file>file:/C:/Users/PC/IdeaProjects/PrototipoProjetoPOO2025/src/Modelo/entidades/Portal.java</file>
-            <file>file:/C:/Users/PC/IdeaProjects/PrototipoProjetoPOO2025/src/Modelo/entidades/ZigueZague.java</file>
-            <file>file:/C:/Users/PC/IdeaProjects/PrototipoProjetoPOO2025/src/Auxiliar/Consts.java</file>
-            <file>file:/C:/Users/PC/IdeaProjects/PrototipoProjetoPOO2025/src/Auxiliar/Posicao.java</file>
+            <file>file:/home/ligia/NetBeansProjects/Projeto-OOP/src/Auxiliar/Consts.java</file>
+            <file>file:/home/ligia/NetBeansProjects/Projeto-OOP/src/Auxiliar/Desenho.java</file>
+            <file>file:/home/ligia/NetBeansProjects/Projeto-OOP/src/Auxiliar/EstadoJogoSalvo.java</file>
+            <file>file:/home/ligia/NetBeansProjects/Projeto-OOP/src/Auxiliar/Game.java</file>
+            <file>file:/home/ligia/NetBeansProjects/Projeto-OOP/src/Auxiliar/Posicao.java</file>
+            <file>file:/home/ligia/NetBeansProjects/Projeto-OOP/src/Controler/ControleDeJogo.java</file>
+            <file>file:/home/ligia/NetBeansProjects/Projeto-OOP/src/Controler/Mundo.java</file>
+            <file>file:/home/ligia/NetBeansProjects/Projeto-OOP/src/Controler/Tela.java</file>
+            <file>file:/home/ligia/NetBeansProjects/Projeto-OOP/src/Modelo/entidades/Entidade.java</file>
+            <file>file:/home/ligia/NetBeansProjects/Projeto-OOP/src/Modelo/fases/Fase.java</file>
+            <file>file:/home/ligia/NetBeansProjects/Projeto-OOP/src/Modelo/entidades/BichinhoVaiVemHorizontal.java</file>
+            <file>file:/home/ligia/NetBeansProjects/Projeto-OOP/src/Modelo/entidades/BichinhoVaiVemVertical.java</file>
+            <file>file:/home/ligia/NetBeansProjects/Projeto-OOP/src/Modelo/entidades/Botao.java</file>
+            <file>file:/home/ligia/NetBeansProjects/Projeto-OOP/src/Modelo/entidades/Cadeado.java</file>
+            <file>file:/home/ligia/NetBeansProjects/Projeto-OOP/src/Modelo/entidades/Chaser.java</file>
+            <file>file:/home/ligia/NetBeansProjects/Projeto-OOP/src/Modelo/entidades/Chave.java</file>
+            <file>file:/home/ligia/NetBeansProjects/Projeto-OOP/src/Modelo/entidades/CospeFogo.java</file>
+            <file>file:/home/ligia/NetBeansProjects/Projeto-OOP/src/Modelo/entidades/Fogo.java</file>
+            <file>file:/home/ligia/NetBeansProjects/Projeto-OOP/src/Modelo/entidades/Gelo.java</file>
+            <file>file:/home/ligia/NetBeansProjects/Projeto-OOP/src/Modelo/entidades/Hero.java</file>
+            <file>file:/home/ligia/NetBeansProjects/Projeto-OOP/src/Modelo/entidades/Moeda.java</file>
+            <file>file:/home/ligia/NetBeansProjects/Projeto-OOP/src/Modelo/entidades/Parede.java</file>
+            <file>file:/home/ligia/NetBeansProjects/Projeto-OOP/src/Modelo/entidades/Portal.java</file>
+            <file>file:/home/ligia/NetBeansProjects/Projeto-OOP/src/Modelo/entidades/ZigueZague.java</file>
+            <file>file:/home/ligia/NetBeansProjects/Projeto-OOP/savegame.dat</file>
         </group>
     </open-files>
 </project-private>

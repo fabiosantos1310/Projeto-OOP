@@ -4,10 +4,11 @@ import Auxiliar.Consts;
 import Auxiliar.Desenho;
 import auxiliar.Posicao;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Random;
 import javax.swing.ImageIcon;
 
-public class ZigueZague extends Entidade{ // 0xFF5fcde4
+public class ZigueZague extends Entidade implements Serializable{ // 0xFF5fcde4
     protected String[] images = {"robo.png", null, null, null, null};
 
     public ZigueZague(int faseAtual, Posicao p) {

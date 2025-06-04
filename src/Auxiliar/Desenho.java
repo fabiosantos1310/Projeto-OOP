@@ -7,7 +7,7 @@ import Controler.Tela;
 
 public class Desenho implements Serializable {
 
-    static Tela jCenario;
+    static transient Tela jCenario;
 
     public static void setCenario(Tela umJCenario) {
         jCenario = umJCenario;

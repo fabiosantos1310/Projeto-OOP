@@ -1,22 +1,18 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package Modelo.entidades;
 
 import Auxiliar.Consts;
 import auxiliar.Posicao;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.Serializable;
 import javax.swing.ImageIcon;
 
-/**
- *
- * @author PC
- */
-public class Cadeado extends Entidade{ // ff45ff
+public class Cadeado extends Entidade implements Serializable{
+    private static final long serialVersionUID = 1L;
     protected String image = "cadeado.png";
 
     public Cadeado(Posicao p){
+        super();
         try{
             this.iImage = new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + this.image);
         } catch(IOException e){
@@ -25,5 +21,15 @@ public class Cadeado extends Entidade{ // ff45ff
         this.bTransponivel = false;
         setPosicao(p);
     }
-    
+
+    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        ois.defaultReadObject();
+        if (this.image != null) {
+            try {
+                this.iImage = new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + this.image);
+            } catch (IOException e) {
+                System.err.println("Erro ao recarregar imagem para Cadeado: " + e.getMessage());
+            }
+        }
+    }
 }

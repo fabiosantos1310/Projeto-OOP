@@ -3,32 +3,43 @@ package Modelo.entidades;
 import Auxiliar.Consts;
 import Auxiliar.Desenho;
 import auxiliar.Posicao;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
 
-public class BichinhoVaiVemHorizontal extends Entidade implements Serializable { // #0xFF99e550
-
+public class BichinhoVaiVemHorizontal extends Entidade implements Serializable {
+    private static final long serialVersionUID = 1L;
     protected String[] images = { "roboPink.png", null, null, null, null };
     private boolean bRight;
     int iContador;
+    private int entidadeFaseAtualIndex;
 
     public BichinhoVaiVemHorizontal(int faseAtual, Posicao p) {
+        super();
+        this.entidadeFaseAtualIndex = faseAtual;
         try{
-            this.iImage = new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + this.images[faseAtual]);
+            if (this.images != null && this.entidadeFaseAtualIndex >= 0 && this.entidadeFaseAtualIndex < this.images.length && this.images[this.entidadeFaseAtualIndex] != null) {
+                this.iImage = new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + this.images[this.entidadeFaseAtualIndex]);
+            }
         } catch(IOException e){
             System.out.println(e.getMessage());
         }
         bRight = true;
         iContador = 0;
         this.bTransponivel = false;
-
         this.setPosicao(p);
+    }
+
+    private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {
+        ois.defaultReadObject();
+        if (this.images != null && this.entidadeFaseAtualIndex >= 0 && this.entidadeFaseAtualIndex < this.images.length && this.images[this.entidadeFaseAtualIndex] != null) {
+            try {
+                this.iImage = new ImageIcon(new java.io.File(".").getCanonicalPath() + Consts.PATH + this.images[this.entidadeFaseAtualIndex]);
+            } catch (IOException e) {
+                System.err.println("Erro ao recarregar imagem para BichinhoVaiVemHorizontal: " + e.getMessage());
+            }
+        }
     }
 
     public void autoDesenho() {
@@ -39,13 +50,14 @@ public class BichinhoVaiVemHorizontal extends Entidade implements Serializable {
             } else if (this.validaPosicao(pPosicao.getColuna() - 1)){
                 this.setPosicao(pPosicao.getLinha(), pPosicao.getColuna() - 1);
             }
-
             bRight = !bRight;
         }
         super.autoDesenho();
         iContador++;
     }
+
     private boolean validaPosicao(int coluna){
-        return Desenho.acessoATelaDoJogo().ehPosicaoValida(new Posicao(pPosicao.getLinha(), coluna), this);       
+        if (Desenho.acessoATelaDoJogo() == null || pPosicao == null) return false;
+        return Desenho.acessoATelaDoJogo().ehPosicaoValida(new Posicao(pPosicao.getLinha(), coluna), this);    
     }
 }
