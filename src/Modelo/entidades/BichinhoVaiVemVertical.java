@@ -27,7 +27,7 @@ public class BichinhoVaiVemVertical extends Entidade implements Serializable{
         bUp = true;
         this.setPosicao(p);
         this.bTransponivel = false;
-        this.bMortal = true; // Garante que o bicho é letal
+        this.bMortal = true;
     }
 
     private void readObject(ObjectInputStream ois) throws IOException, ClassNotFoundException {

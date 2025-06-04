@@ -101,7 +101,7 @@ public class Fogo extends Entidade implements Serializable{
     public void autoDesenho() {
         boolean moveu = false;
         if (this.tela == null || this.tela.current == null || this.tela.current.fogos == null) {
-            super.autoDesenho(); // Ainda tenta desenhar se a imagem existir
+            super.autoDesenho();
             return;
         }
 
@@ -147,15 +147,12 @@ public class Fogo extends Entidade implements Serializable{
             return false; 
         }
         
-        // Salva a posição original para restaurar após a verificação
         int linhaOriginal = this.pPosicao.getLinha();
         int colunaOriginal = this.pPosicao.getColuna();
         
-        // Move temporariamente para a próxima posição para verificar com ehPosicaoValida
         this.pPosicao.setPosicao(proximaPosicao.getLinha(), proximaPosicao.getColuna());
         boolean ok = this.tela.cj.ehPosicaoValida(this.tela.current, this.pPosicao, this);
         
-        // Restaura a posição original
         this.pPosicao.setPosicao(linhaOriginal, colunaOriginal);
         
         return ok;
@@ -163,7 +160,6 @@ public class Fogo extends Entidade implements Serializable{
     
     public boolean verificaPos(){
         if (this.tela == null || this.tela.cj == null || this.tela.current == null || this.pPosicao == null) return false;
-        // A chamada original para this.tela.cj.verificaFogo(...) foi removida.
         return this.tela.cj.ehPosicaoValida(this.tela.current, pPosicao, this);
     }
     

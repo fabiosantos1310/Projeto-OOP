@@ -144,7 +144,7 @@ public class Mundo {
 
         boolean heroInstanceExists = false;
         for(Entidade e : fase.entidades){
-            if(e instanceof Hero && !((Hero)e).isClone){ // Verifica se já existe uma instância de Hero (não clone)
+            if(e instanceof Hero && !((Hero)e).isClone){
                 heroInstanceExists = true;
                 break;
             }
@@ -153,30 +153,9 @@ public class Mundo {
             if (heroInitial != null && heroInitial.getPosicao() != null) {
                 fase.entidades.add(new Hero(heroInitial.getPosicao(), false, fase.indice));
             } else {
-                // Adiciona um herói em posição padrão se nenhum foi definido no mapa
-                // para garantir que a fase sempre tenha um herói.
                 fase.entidades.add(new Hero(new Posicao(1, 1), false, fase.indice)); 
             }
         }
-        
-        // DEBUG: Inserir no final de Mundo.carregaMundo
-        int debugTotalEntidadesInit = 0;
-        int debugBVHInit = 0;
-        int debugBVVInit = 0;
-        if (fase.entidades != null) {
-            debugTotalEntidadesInit = fase.entidades.size();
-            for (Modelo.entidades.Entidade ent : fase.entidades) {
-                if (ent instanceof Modelo.entidades.BichinhoVaiVemHorizontal) debugBVHInit++;
-                if (ent instanceof Modelo.entidades.BichinhoVaiVemVertical) debugBVVInit++;
-            }
-        }
-        System.out.println("DEBUG_MUNDO_INIT: Fase " + fase.indice +
-                           " | Entidades: " + debugTotalEntidadesInit +
-                           " | BVH: " + debugBVHInit +
-                           " | BVV: " + debugBVVInit +
-                           " | Paredes: " + (fase.paredes != null ? fase.paredes.size() : 0) +
-                           " | Chaves: " + (fase.chaves != null ? fase.chaves.size() : 0) +
-                           " | Moedas: " + (fase.moedas != null ? fase.moedas.size() : 0));
     }
 
     public void apagarMundo(Fase fase) {

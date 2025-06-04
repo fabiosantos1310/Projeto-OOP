@@ -262,7 +262,6 @@ public class ControleDeJogo implements Serializable {
             boolean fogoConsumidoPorOutroMortal = false;
             while (mortalIterator.hasNext()) {
                 Entidade m = mortalIterator.next();
-                // Evita colisão do fogo com o próprio herói (já tratado), com o clone, ou com nulos/ele mesmo.
                 if (m == hero || (fase.getClone() != null && m == fase.getClone()) || m.getPosicao() == null || m == f) continue;
 
                 if (f.getPosicao().igual(m.getPosicao())) {

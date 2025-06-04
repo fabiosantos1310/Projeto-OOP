@@ -6,7 +6,7 @@ import Controler.Tela;
 import Modelo.fases.Fase;
 import auxiliar.Posicao;
 import java.io.IOException;
-import java.io.ObjectInputStream; // Importar ObjectInputStream
+import java.io.ObjectInputStream;
 import java.io.Serializable;
 import javax.swing.ImageIcon;
 

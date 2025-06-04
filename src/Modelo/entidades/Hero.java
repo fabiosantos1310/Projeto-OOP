@@ -25,7 +25,6 @@ public class Hero extends Entidade implements Serializable {
     public int direcao = 0;
     public int moedas = 0;
     public boolean isClone;
-    // private transient Fase fase; // REMOVIDO este campo
     private transient Tela tela;
     public int heroFaseAtualIndex; 
 

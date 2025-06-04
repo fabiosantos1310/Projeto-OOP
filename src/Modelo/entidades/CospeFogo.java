@@ -4,7 +4,6 @@ import Auxiliar.Consts;
 import Auxiliar.Desenho;
 import Controler.Tela;
 import auxiliar.Posicao;
-// import java.awt.Graphics; // Graphics não usado diretamente aqui
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.Serializable;
@@ -51,7 +50,6 @@ public class CospeFogo extends Entidade implements Serializable{
             case 0: this.iImage = this.girarImagem(this.iImage, 90); break;
             case 1: this.iImage = this.girarImagem(this.iImage, 180); break;
             case 2: this.iImage = this.girarImagem(this.iImage, 270); break;
-            // case 3 (default) não gira ou gira 0 graus.
         }
     }
 

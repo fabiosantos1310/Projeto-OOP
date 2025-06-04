@@ -10,10 +10,10 @@ import javax.swing.ImageIcon;
 public abstract class Entidade implements Serializable {
     private static final long serialVersionUID = 1L;
 
-    protected transient ImageIcon iImage; // Inicializado pelas subclasses ou construtor com Posicao
+    protected transient ImageIcon iImage;
     protected  Posicao pPosicao;
-    protected  boolean bTransponivel; /*Pode passar por cima?*/
-    protected  boolean bMortal;       /*Se encostar, morre?*/
+    protected  boolean bTransponivel;
+    protected  boolean bMortal;
 
     /**
      * Construtor base para Entidade.
@@ -23,11 +23,7 @@ public abstract class Entidade implements Serializable {
     protected Entidade() {
         this.bTransponivel = true;
         this.bMortal = false;
-        // iImage pode ser inicializado como um ImageIcon vazio simples,
-        // já que as subclasses geralmente carregam suas próprias imagens específicas.
         this.iImage = new ImageIcon(); 
-        // pPosicao permanece null e deve ser definido pela subclasse,
-        // por exemplo, chamando setPosicao(new Posicao(...)) ou usando o construtor com Posicao.
     }
 
     /**
@@ -35,11 +31,9 @@ public abstract class Entidade implements Serializable {
      * @param p A posição inicial da entidade.
      */
     protected Entidade(Posicao p) {
-        this(); // Chama o construtor padrão para inicializar bTransponivel e bMortal e iImage padrão
+        this();
         if (p == null) {
             System.err.println("Alerta: Tentativa de criar Entidade com Posicao nula. pPosicao permanecerá nulo.");
-            // Considerar lançar IllegalArgumentException se pPosicao nula não for permitida
-            // throw new IllegalArgumentException("Posicao não pode ser nula para Entidade.");
         }
         this.pPosicao = p;
     }
@@ -66,12 +60,10 @@ public abstract class Entidade implements Serializable {
 
     public void autoDesenho() {
         if (this.pPosicao == null) {
-            // System.err.println("Alerta: Tentativa de desenhar Entidade com pPosicao nula.");
-            return; // Não pode desenhar sem posição
+            return; 
         }
         if (this.iImage == null || this.iImage.getIconWidth() <= 0) {
-            // System.err.println("Alerta: Tentativa de desenhar Entidade com iImage nula ou inválida.");
-            return; // Não pode desenhar sem imagem válida
+            return;
         }
         Desenho.desenhar(this.iImage, this.pPosicao.getColuna(), this.pPosicao.getLinha());
     }
@@ -98,13 +90,10 @@ public abstract class Entidade implements Serializable {
     public void setPosicao(Posicao p) {
         if (p == null) {
             System.err.println("Alerta: Tentativa de definir pPosicao como nulo em Entidade.");
-            // Considerar lançar IllegalArgumentException se pPosicao nula não for permitida
         }
         this.pPosicao = p;
     }
 
-    // Métodos de movimento (moveUp, moveDown, etc.)
-    // Adicionam verificação para pPosicao nulo para evitar NullPointerException
     public boolean moveUp() {
         if (pPosicao == null) return false;
         return this.pPosicao.moveUp();
@@ -127,7 +116,6 @@ public abstract class Entidade implements Serializable {
 
     public ImageIcon girarImagem(ImageIcon icon, double angulo) {
         if (icon == null || icon.getIconWidth() <= 0 || icon.getIconHeight() <= 0) {
-            // Retorna um ícone vazio ou o original se o ícone de entrada for inválido
             return (icon != null) ? icon : new ImageIcon(); 
         }
         int w = icon.getIconWidth();
@@ -135,7 +123,6 @@ public abstract class Entidade implements Serializable {
 
         BufferedImage buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = buffer.createGraphics();
-        // Passar null como Component para paintIcon é aceitável se o Icon não depender dele.
         icon.paintIcon(null, g2d, 0, 0); 
         g2d.dispose();
 

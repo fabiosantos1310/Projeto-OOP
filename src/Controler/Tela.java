@@ -212,7 +212,7 @@ public class Tela extends javax.swing.JFrame implements MouseListener, KeyListen
             System.err.println("Não é possível reiniciar, fase atual ('current') é nula.");
             if (Game.faseAtual >= 0 && Game.faseAtual < Game.fases.size()) {
                 this.current = Game.fases.get(Game.faseAtual);
-                 if (this.current == null) { // if it's still null after trying to get it from list
+                 if (this.current == null) {
                      System.err.println("Falha ao obter a fase " + Game.faseAtual + " da lista global de fases.");
                      return;
                  }
